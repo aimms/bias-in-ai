@@ -1,0 +1,207 @@
+## ams_version=1.0
+
+Model Main_BiasInAI {
+	Section Data_Model {
+		Section Quantities_and_Units {
+			Comment: {
+				"This section contains all the units and quantities that are added automatically by AIMMS.
+				It is recommended to declare all your quantities here."
+			}
+			Quantity SI_Time_Duration {
+				BaseUnit: s;
+				Conversions: minute->s : #-># * 60;
+				Comment: {
+					"Expresses the value for the duration of periods.
+					
+					The unit s has been added automatically because it is a required unit for AimmsWebUI.
+					
+					The unit minute has been added automatically because it is a required unit for AimmsWebUI."
+				}
+			}
+		}
+		Set s_ids {
+			Index: i_id;
+		}
+		Parameter p_target {
+			IndexDomain: i_id;
+		}
+		StringParameter sp_commentText {
+			IndexDomain: i_id;
+		}
+		Parameter p_severeToxicity {
+			IndexDomain: i_id;
+		}
+		Parameter p_obscene {
+			IndexDomain: i_id;
+		}
+		Parameter p_identityAttack {
+			IndexDomain: i_id;
+		}
+		Parameter p_insult {
+			IndexDomain: i_id;
+		}
+		Parameter p_threat {
+			IndexDomain: i_id;
+		}
+		Parameter p_asian {
+			IndexDomain: i_id;
+		}
+		Parameter p_atheist {
+			IndexDomain: i_id;
+		}
+		Parameter p_bisexual {
+			IndexDomain: i_id;
+		}
+		Parameter p_black {
+			IndexDomain: i_id;
+		}
+		Parameter p_buddhist {
+			IndexDomain: i_id;
+		}
+		Parameter p_christian {
+			IndexDomain: i_id;
+		}
+		Parameter p_female {
+			IndexDomain: i_id;
+		}
+		Parameter p_heterosexual {
+			IndexDomain: i_id;
+		}
+		Parameter p_hindu {
+			IndexDomain: i_id;
+		}
+		Parameter p_homosexualGayLesbian {
+			IndexDomain: i_id;
+		}
+		Parameter p_intellectualLearningDisability {
+			IndexDomain: i_id;
+		}
+		Parameter p_jewish {
+			IndexDomain: i_id;
+		}
+		Parameter p_latino {
+			IndexDomain: i_id;
+		}
+		Parameter p_male {
+			IndexDomain: i_id;
+		}
+		Parameter p_muslim {
+			IndexDomain: i_id;
+		}
+		Parameter p_otherDisability {
+			IndexDomain: i_id;
+		}
+		Parameter p_otherGender {
+			IndexDomain: i_id;
+		}
+		Parameter p_otherraceethnicity {
+			IndexDomain: i_id;
+		}
+		Parameter p_otherReligion {
+			IndexDomain: i_id;
+		}
+		Parameter p_otherSexualOrientation {
+			IndexDomain: i_id;
+		}
+		Parameter p_physicalDisability {
+			IndexDomain: i_id;
+		}
+		Parameter p_psychiatricMentalIllness {
+			IndexDomain: i_id;
+		}
+		Parameter p_transgender {
+			IndexDomain: i_id;
+		}
+		Parameter p_white {
+			IndexDomain: i_id;
+		}
+		StringParameter sp_createdDate {
+			IndexDomain: i_id;
+		}
+		Parameter p_publicationID {
+			IndexDomain: i_id;
+		}
+		Parameter p_parentID {
+			IndexDomain: i_id;
+		}
+		Parameter p_articleID {
+			IndexDomain: i_id;
+		}
+		StringParameter sp_rating {
+			IndexDomain: i_id;
+		}
+		Parameter p_funny {
+			IndexDomain: i_id;
+		}
+		Parameter p_wow {
+			IndexDomain: i_id;
+		}
+		Parameter p_sad {
+			IndexDomain: i_id;
+		}
+		Parameter p_likes {
+			IndexDomain: i_id;
+		}
+		Parameter p_disagree {
+			IndexDomain: i_id;
+		}
+		Parameter p_sexualExplicit {
+			IndexDomain: i_id;
+		}
+		Parameter p_identityAnnotatorCount {
+			IndexDomain: i_id;
+		}
+		Parameter p_toxicityAnnotatorCount {
+			IndexDomain: i_id;
+		}
+	}
+	Section Integration {
+		Procedure pr_importDataset {
+			Body: {
+				dex::AddMapping(
+				        "CSVMapping",                   ! mapping name
+				        "Mappings/csv-import-mapping.xml"       ! location + name of mapping file
+				);
+				
+				dex::ReadFromFile(
+				        "data/data - test.csv",                ! data file
+				        "CSVMapping",                   ! mapping name, as specified in AddMapping
+				        1,                              ! empty identifiers
+				        1,                              ! empty range sets
+				        1                               ! reset 'iterative-binds-to'
+				);
+			}
+		}
+	}
+	Procedure MainInitialization {
+		Comment: "Add initialization statements here that do NOT require any library being initialized already.";
+	}
+	Procedure PostMainInitialization {
+		Comment: {
+			"Add initialization statements here that require that the libraries are already initialized properly,
+			or add statements that require the Data Management module to be initialized."
+		}
+	}
+	Procedure MainExecution;
+	Procedure PreMainTermination {
+		Body: {
+			return DataManagementExit();
+		}
+		Comment: {
+			"Add termination statements here that require all libraries to be still alive.
+			Return 1 if you allow the termination sequence to continue.
+			Return 0 if you want to cancel the termination sequence."
+		}
+	}
+	Procedure MainTermination {
+		Body: {
+			return 1;
+		}
+		Comment: {
+			"Add termination statements here that do not require all libraries to be still alive.
+			Return 1 to allow the termination sequence to continue.
+			Return 0 if you want to cancel the termination sequence.
+			It is recommended to only use the procedure PreMainTermination to cancel the termination sequence and let this procedure always return 1."
+		}
+	}
+}

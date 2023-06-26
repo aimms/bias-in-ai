@@ -1,0 +1,9 @@
+﻿* AIMMS
+rounding_compatibility Aimms_3_7
+use_UTC_forCaseAndStartEndDate 1
+* CBC 2.9
+* CPLEX 22.1
+* IPOPT 3.11
+* NETSOL
+* Environment
+Default_UI 0
