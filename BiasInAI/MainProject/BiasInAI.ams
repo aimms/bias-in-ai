@@ -164,7 +164,7 @@ Model Main_BiasInAI {
 				);
 				
 				dex::ReadFromFile(
-				        "data/data - test.csv",                ! data file
+				        "data/data.csv",                ! data file
 				        "CSVMapping",                   ! mapping name, as specified in AddMapping
 				        1,                              ! empty identifiers
 				        1,                              ! empty range sets
