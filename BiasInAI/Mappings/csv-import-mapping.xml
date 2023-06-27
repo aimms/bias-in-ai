@@ -2,7 +2,7 @@
     <RowMapping name="data">
         <ColumnMapping name="id" binds-to="i_id"/>
         <ColumnMapping name="target" maps-to="p_target(i_id)"/>
-        <ColumnMapping name="comment_text" maps-to="sp_commenttext(i_id)"/>
+        <ColumnMapping name="comment_text" max-string-size="8192" maps-to="sp_commenttext(i_id)"/>
         <ColumnMapping name="severe_toxicity" maps-to="p_severetoxicity(i_id)"/>
         <ColumnMapping name="obscene" maps-to="p_obscene(i_id)"/>
         <ColumnMapping name="identity_attack" maps-to="p_identityattack(i_id)"/>

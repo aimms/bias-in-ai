@@ -173,6 +173,105 @@ Model Main_BiasInAI {
 			}
 		}
 	}
+	Section UI_Declarations {
+		Procedure pr_empty;
+		StringParameter sp_logo {
+			Definition: "aimms_logo.png";
+		}
+		Section Workflow {
+			StringParameter sp_myWorkflows {
+				IndexDomain: (webui::indexWorkflowOrder,webui::indexWorkflowSpec);
+			}
+			StringParameter sp_myWorkflowSteps {
+				IndexDomain: (webui::indexWorkflowOrder,webui::indexNoOfPages,webui::indexWorkflowPageSpec);
+				Definition: {
+					data 
+					{ ( 1, 1, displayText       ) : "Welcome"            ,  ( 1, 1, icon              ) : "aimms-happy"        ,
+					  ( 1, 1, pageId            ) : "home"               ,  ( 1, 1, tooltip           ) : "welcome"            ,
+					  ( 1, 1, workflowPageState ) : "active"             ,  ( 1, 1, pageDataState     ) : "Incomplete"         ,
+					  ( 1, 1, redirectPageId    ) : "problem_description",  ( 1, 2, displayText       ) : "Story"              ,
+					  ( 1, 2, icon              ) : "aimms-lamp5"        ,  ( 1, 2, pageId            ) : "problem_description",
+					  ( 1, 2, tooltip           ) : "Problem description",  ( 1, 2, workflowPageState ) : "active"             ,
+					  ( 1, 2, pageDataState     ) : "incomplete"         ,  ( 1, 2, redirectPageId    ) : "home"               ,
+					  ( 1, 3, displayText       ) : "Inputs"             ,  ( 1, 3, icon              ) : "aimms-equalizer2"   ,
+					  ( 1, 3, pageId            ) : "inputs"             ,  ( 1, 3, tooltip           ) : "Input data"         ,
+					  ( 1, 3, workflowPageState ) : "active"             ,  ( 1, 3, pageDataState     ) : "incomplete"         ,
+					  ( 1, 3, redirectPageId    ) : "home"               ,  ( 1, 4, displayText       ) : "Results"            ,
+					  ( 1, 4, icon              ) : "aimms-make-group"   ,  ( 1, 4, pageId            ) : "dashboard"          ,
+					  ( 1, 4, tooltip           ) : "Model outputs"      ,  ( 1, 4, workflowPageState ) : "active"             ,
+					  ( 1, 4, pageDataState     ) : "Incomplete"         ,  ( 1, 4, redirectPageId    ) : "home"                }
+				}
+			}
+		}
+		Section Pages {
+			Section Inputs {
+				Procedure pr_changeQuantityElementsPerPage {
+					Body: {
+						empty p_calc_idPerPage;
+						
+						for i_id do
+						    for (i_page) | ord(i_id) <= val(i_page) * p_quantityElementsPerPage do
+						
+						        p_calc_idPerPage(i_id, i_page) := 1;
+						        break;
+						    endfor;
+						endfor;
+					}
+				}
+				Procedure pr_previousPage {
+					Body: {
+						if ep_currentPage = first(i_page) then
+						    !do nothing
+						else    
+						    ep_currentPage -= 1;
+						
+						endif;
+					}
+				}
+				Procedure pr_nextPage {
+					Body: {
+						if ep_currentPage = last(i_page) then
+						    !do nothing
+						else  
+						    ep_currentPage += 1;
+						endif;
+					}
+				}
+				Set s_def_pages {
+					Index: i_page;
+					Parameter: ep_currentPage;
+					Definition: {
+						{1 .. p_def_numberOfPages}
+					}
+				}
+				Set s_def_idsPerPage {
+					SubsetOf: s_ids;
+					Index: i_pg_id;
+					Definition: {
+						{i_id | p_calc_idPerPage(i_id, ep_currentPage)}
+					}
+				}
+				Parameter p_def_numberOfPages {
+					Property: NoSave;
+					Definition: ceil(p_def_cardID /$ p_quantityElementsPerPage);
+				}
+				Parameter p_def_cardID {
+					Definition: card(s_ids);
+				}
+				StringParameter sp_def_currentPage {
+					Definition: "Page " + ep_currentPage + " of " + card(s_def_pages);
+				}
+				Parameter p_quantityElementsPerPage {
+					Range: [0, 50000];
+					webui::UponChangeProcedure: pr_changeQuantityElementsPerPage;
+				}
+				Parameter p_calc_idPerPage {
+					IndexDomain: (i_id,i_page);
+					Range: binary;
+				}
+			}
+		}
+	}
 	Procedure MainInitialization {
 		Comment: "Add initialization statements here that do NOT require any library being initialized already.";
 	}

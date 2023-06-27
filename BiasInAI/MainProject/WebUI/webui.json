@@ -1,0 +1,967 @@
+{
+  "version": "4.67.0",
+  "application": {
+    "aimms.widget.type": {
+      "literal": "application"
+    },
+    "browsername": {
+      "aimms": {
+        "contents": [
+          "webui::ClientBrowserName"
+        ]
+      }
+    },
+    "browsertimezone": {
+      "aimms": {
+        "contents": [
+          "webui::BrowserTimeZone"
+        ]
+      }
+    },
+    "defaults.upload.download.controls.show": {
+      "literal": true
+    },
+    "ignoredst": {
+      "aimms": {
+        "contents": [
+          "webui::IgnoreDST"
+        ]
+      }
+    },
+    "pages": {
+      "literal": {
+        "name": "root",
+        "slug": "root",
+        "children": [
+          {
+            "name": "Main Project",
+            "slug": "main_project",
+            "children": [
+              {
+                "name": "home",
+                "slug": "home",
+                "type": "pagev2-grid",
+                "children": []
+              },
+              {
+                "name": "Problem Description",
+                "type": "pagev2-grid",
+                "slug": "problem_description",
+                "children": []
+              },
+              {
+                "name": "Inputs",
+                "type": "pagev2-grid",
+                "slug": "inputs",
+                "children": []
+              },
+              {
+                "name": "Dashboard",
+                "type": "pagev2-grid",
+                "slug": "dashboard",
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "theme.classic": {
+      "literal": "NOT_ALLOWED"
+    },
+    "timezone": {
+      "aimms": {
+        "contents": [
+          "webui::DisplayTimeZone"
+        ]
+      }
+    },
+    "timezone.dst.readonly": {
+      "aimms": {
+        "contents": [
+          "webui::DefaultDSTSettingForDisplayTimeZone"
+        ]
+      }
+    },
+    "workflows.configuration": {
+      "literal": {
+        "identifier": "sp_myWorkflowSteps",
+        "slice": [
+          {
+            "index": "webui::indexWorkflowOrder",
+            "type": "free",
+            "value": "webui::indexWorkflowOrder"
+          },
+          {
+            "index": "webui::indexNoOfPages",
+            "type": "free",
+            "value": "webui::indexNoOfPages"
+          },
+          {
+            "index": "webui::indexWorkflowPageSpec",
+            "type": "free",
+            "value": "webui::indexWorkflowPageSpec"
+          }
+        ]
+      }
+    }
+  },
+  "layouts/custom_b849d869-6dc6-4262-8a0a-9c5712f8b49b": {
+    "definition": {
+      "literal": {
+        "componentName": "Grid",
+        "props": {
+          "gridTemplateColumns": "3fr 1fr",
+          "gridTemplateRows": "0.4fr 0.2fr 1fr",
+          "gridTemplateAreas": "\"area-a area-b\" \"area-a area-c\" \"area-a area-d\""
+        },
+        "items": [
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-a",
+              "name": "Area A",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-b",
+              "name": "Area B",
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-c",
+              "name": "Area C",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-d",
+              "name": "Area D",
+              "gridAutoFlow": "row"
+            }
+          }
+        ]
+      }
+    },
+    "displayName": {
+      "literal": "Inputs"
+    }
+  },
+  "pages/home": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "img_homeLogo",
+          "gridArea": "area-d",
+          "dndId": "area-dimg_homeLogo0"
+        },
+        {
+          "widgetUri": "txt_welcome",
+          "gridArea": "area-a",
+          "dndId": "Unassigned widgetstxt_welcome"
+        }
+      ]
+    },
+    "layoutId": {
+      "literal": "Layout10"
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "img_homeLogo",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "txt_welcome",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    }
+  },
+  "pages/inputs": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "btn_backwards",
+          "gridArea": "area-c",
+          "dndId": "area-cbtn_backwards0"
+        },
+        {
+          "widgetUri": "btn_forward",
+          "gridArea": "area-c",
+          "dndId": "area-ebtn_forward4"
+        },
+        {
+          "widgetUri": "scl_paggedTable",
+          "gridArea": "area-b",
+          "dndId": "area-bscl_paggedTable1"
+        },
+        {
+          "widgetUri": "btn_import",
+          "gridArea": "area-d",
+          "dndId": "area-dbtn_import2"
+        },
+        {
+          "widgetUri": "tbl_dataset",
+          "gridArea": "area-a",
+          "dndId": "area-atbl_dataset3"
+        }
+      ]
+    },
+    "layoutId": {
+      "literal": "custom_b849d869-6dc6-4262-8a0a-9c5712f8b49b"
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "tbl_dataset",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "scl_paggedTable",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "btn_forward",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "btn_backwards",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "btn_import",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    }
+  },
+  "pages/problem_description": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "txt_problemDescription",
+          "gridArea": "area-a",
+          "dndId": "Unassigned widgetstxt_problemDescription"
+        }
+      ]
+    },
+    "layoutId": {
+      "literal": "Layout11"
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "txt_problemDescription",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    }
+  },
+  "widgets/btn_backwards": {
+    "action": {
+      "literal": {
+        "type": "procedure",
+        "value": "pr_previousPage"
+      }
+    },
+    "aimms.widget.type": {
+      "literal": "button"
+    },
+    "name": {
+      "literal": "btn_backwards"
+    },
+    "title": {
+      "literal": "<<"
+    }
+  },
+  "widgets/btn_forward": {
+    "action": {
+      "literal": {
+        "type": "procedure",
+        "value": "pr_nextPage"
+      }
+    },
+    "aimms.widget.type": {
+      "literal": "button"
+    },
+    "name": {
+      "literal": "btn_forward"
+    },
+    "title": {
+      "literal": ">>"
+    }
+  },
+  "widgets/btn_import": {
+    "action": {
+      "literal": {
+        "type": "procedure",
+        "value": "pr_importDataset"
+      }
+    },
+    "aimms.widget.type": {
+      "literal": "button"
+    },
+    "name": {
+      "literal": "btn_import"
+    },
+    "title": {
+      "literal": "Import Dataset"
+    }
+  },
+  "widgets/img_homeLogo": {
+    "aimms.widget.type": {
+      "literal": "image"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "sp_logo"
+        ]
+      }
+    },
+    "name": {
+      "literal": "img_homeLogo"
+    }
+  },
+  "widgets/scl_paggedTable": {
+    "aimms.widget.type": {
+      "literal": "scalar"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_quantityElementsPerPage",
+          "p_def_cardID",
+          "sp_def_currentPage"
+        ]
+      }
+    },
+    "contents.numdecimals": {
+      "literal": 0
+    },
+    "name": {
+      "literal": "scl_paggedTable"
+    }
+  },
+  "widgets/tbl_dataset": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_target",
+          "sp_commentText",
+          "p_severeToxicity",
+          "p_obscene",
+          "p_identityAttack",
+          "p_insult",
+          "p_threat",
+          "p_asian",
+          "p_atheist",
+          "p_bisexual",
+          "p_black",
+          "p_buddhist",
+          "p_christian",
+          "p_female",
+          "p_heterosexual",
+          "p_hindu",
+          "p_homosexualGayLesbian",
+          "p_intellectualLearningDisability",
+          "p_jewish",
+          "p_latino",
+          "p_male",
+          "p_muslim",
+          "p_otherDisability",
+          "p_otherGender",
+          "p_otherraceethnicity",
+          "p_otherReligion",
+          "p_otherSexualOrientation",
+          "p_physicalDisability",
+          "p_psychiatricMentalIllness",
+          "p_transgender",
+          "p_white",
+          "sp_createdDate",
+          "p_publicationID",
+          "p_parentID",
+          "p_articleID",
+          "sp_rating",
+          "p_funny",
+          "p_wow",
+          "p_sad",
+          "p_likes",
+          "p_disagree",
+          "p_sexualExplicit",
+          "p_identityAnnotatorCount",
+          "p_toxicityAnnotatorCount"
+        ],
+        "prefix": "aimms",
+        "partition": {
+          "rowHeader": [
+            "i_id"
+          ],
+          "colHeader": [
+            "<IDENTIFIER-SET>"
+          ],
+          "aggregated": []
+        },
+        "totals": [
+          {
+            "indexName": "<IDENTIFIER-SET>",
+            "operators": [
+              "count_only_visible"
+            ]
+          }
+        ],
+        "slices": [
+          {
+            "identifier": "p_articleID",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_asian",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_atheist",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_bisexual",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_black",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_buddhist",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_christian",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_hindu",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_disagree",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "sp_rating",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "sp_createdDate",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "sp_commentText",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_wow",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_white",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_transgender",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_toxicityAnnotatorCount",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_threat",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_target",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_sexualExplicit",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_severeToxicity",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_sad",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_publicationID",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_psychiatricMentalIllness",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_physicalDisability",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_parentID",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_otherSexualOrientation",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_obscene",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_latino",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_jewish",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_insult",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_identityAttack",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_heterosexual",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_female",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_homosexualGayLesbian",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_identityAnnotatorCount",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_male",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_intellectualLearningDisability",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_muslim",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_otherDisability",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_otherGender",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_otherReligion",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_otherraceethnicity",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_funny",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          },
+          {
+            "identifier": "p_likes",
+            "slice": [
+              {
+                "index": "i_id",
+                "type": "subset",
+                "value": "i_pg_id"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "i_id"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "sp_commentText"
+          },
+          "width": 46.64
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "sp_createdDate"
+          },
+          "width": 43.19
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "sp_rating"
+          },
+          "width": 16.75
+        }
+      ]
+    },
+    "name": {
+      "literal": "tbl_dataset"
+    },
+    "title": {
+      "literal": "Raw Dataset"
+    }
+  },
+  "widgets/txt_problemDescription": {
+    "aimms.widget.type": {
+      "literal": "text"
+    },
+    "contents": {
+      "literal": "<div><span style=\"font-size: 32px;\"><b>Story</b></span></div><div><br></div><div><span style=\"font-size: 18px;\">At the end of 2017, the </span><a href=\"https://medium.com/@aja_15265/saying-goodbye-to-civil-comments-41859d3a2b1d\" target=\"_blank\"><span style=\"font-size: 18px;\">Civil Comments</span></a><span style=\"font-size: 18px;\"> platform shut down and released their ~2 million public comments in a lasting open archive. Jigsaw sponsored this effort and helped to comprehensively annotate the data.&nbsp; In 2019, Kaggle held the </span><a href=\"https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/overview\" target=\"_blank\"><span style=\"font-size: 18px;\">Jigsaw Unintended Bias in Toxicity Classification</span></a><span style=\"font-size: 18px;\"> competition so that data scientists worldwide could work together to investigate ways to mitigate bias.</span></div><div><br></div><div><span style=\"font-size: 18px;\">This project is able to load some of the data from the competition and connect with Python model where each comment is labeled as either \"toxic\" or \"not toxic\".</span></div><div><br></div><div><i><span style=\"font-size: 18px;\">The code will run for approximately 30 seconds.&nbsp; When it finishes, you should see as output a message saying that the data was successfully loaded, along with two examples of comments: one is toxic, and the other is not.</span></i></div><div><br></div>"
+    },
+    "name": {
+      "literal": "txt_problemDescription"
+    }
+  },
+  "widgets/txt_welcome": {
+    "aimms.widget.type": {
+      "literal": "text"
+    },
+    "contents": {
+      "literal": "<div><span style=\"background-color: inherit; font-size: 32px;\"><b>Welcome!</b></span></div><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">You are in an AIMMS Example. Feel free to play around and create something more in this app!</span></div><div><span style=\"background-color: inherit; font-size: 18px;\">&nbsp;</span></div><div><span style=\"background-color: inherit; font-size: 18px;\">If you do, please fork this repository and commit your changes.&nbsp;This ensures our GitHub stays up-to-date for the entire community!</span></div><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">You can also check our other interactive resources:</span></div><div><br></div><ul><li><span style=\"background-color: inherit; font-size: 18px;\">In the Online&nbsp;</span><a href=\"https://community.aimms.com/\" style=\"font-size: 18px;\" target=\"_blank\"><span style=\"background-color: inherit;\">Community</span></a><span style=\"background-color: inherit; font-size: 18px;\">, talk to other developers and AIMMSians about the product, modeling, use cases, and more.</span></li><li><span style=\"background-color: inherit; font-size: 18px;\">In the&nbsp;</span><a href=\"https://academy.aimms.com/\" style=\"font-size: 18px;\" target=\"_blank\"><span style=\"background-color: inherit;\">Academy</span></a><span style=\"background-color: inherit; font-size: 18px;\">, learn new skills and challenge yourself. We are busy creating new courses, so keep an eye out!</span></li></ul><div><br></div><div><span style=\"background-color: inherit; font-size: 18px;\">For questions that can't be posted on the community, contact us at&nbsp;</span><i style=\"background-color: rgb(255, 255, 204); font-size: 18px;\">support@aimms.com</i><span style=\"background-color: inherit; font-size: 18px;\">.</span></div>"
+    },
+    "name": {
+      "literal": "txt_welcome"
+    }
+  }
+}

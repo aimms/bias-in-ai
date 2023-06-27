@@ -7,3 +7,5 @@ use_UTC_forCaseAndStartEndDate 1
 * NETSOL
 * Environment
 Default_UI 0
+Open_WebUI_on_Startup 1
+Check_for_old_style_WebUI_annotations 0
