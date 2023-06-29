@@ -239,10 +239,11 @@ Model Main_BiasInAI {
 				}
 				Set s_def_pages {
 					Index: i_page;
-					Parameter: ep_currentPage;
-					Definition: {
-						{1 .. p_def_numberOfPages}
-					}
+					Definition: if p_def_numberOfPages then {1 .. p_def_numberOfPages} else {} endif;
+				}
+				ElementParameter ep_currentpage {
+					Range: s_def_pages;
+					InitialData: '';
 				}
 				Set s_def_idsPerPage {
 					SubsetOf: s_ids;
@@ -263,44 +264,54 @@ Model Main_BiasInAI {
 				}
 				Parameter p_quantityElementsPerPage {
 					Range: [0, 50000];
+					InitialData: 25;
 					webui::UponChangeProcedure: pr_changeQuantityElementsPerPage;
 				}
 				Parameter p_calc_idPerPage {
 					IndexDomain: (i_id,i_page);
 					Range: binary;
+					InitialData: data {};
 				}
 			}
 		}
 	}
-	Procedure MainInitialization {
-		Comment: "Add initialization statements here that do NOT require any library being initialized already.";
-	}
-	Procedure PostMainInitialization {
-		Comment: {
-			"Add initialization statements here that require that the libraries are already initialized properly,
-			or add statements that require the Data Management module to be initialized."
+	Section Application_initialization_and_termination {
+		Procedure MainInitialization {
+			Body: {
+				ProfilerStart();
+			}
+			Comment: "Add initialization statements here that do NOT require any library being initialized already.";
+		}
+		Procedure PostMainInitialization {
+			Comment: {
+				"Add initialization statements here that require that the libraries are already initialized properly,
+				or add statements that require the Data Management module to be initialized."
+			}
+		}
+		Procedure PreMainTermination {
+			Body: {
+				return 1 ; ! We don't work with cases.
+				!return DataManagementExit();
+			}
+			Comment: {
+				"Add termination statements here that require all libraries to be still alive.
+				Return 1 if you allow the termination sequence to continue.
+				Return 0 if you want to cancel the termination sequence."
+			}
+		}
+		Procedure MainTermination {
+			Body: {
+				return 1;
+			}
+			Comment: {
+				"Add termination statements here that do not require all libraries to be still alive.
+				Return 1 to allow the termination sequence to continue.
+				Return 0 if you want to cancel the termination sequence.
+				It is recommended to only use the procedure PreMainTermination to cancel the termination sequence and let this procedure always return 1."
+			}
 		}
 	}
-	Procedure MainExecution;
-	Procedure PreMainTermination {
-		Body: {
-			return DataManagementExit();
-		}
-		Comment: {
-			"Add termination statements here that require all libraries to be still alive.
-			Return 1 if you allow the termination sequence to continue.
-			Return 0 if you want to cancel the termination sequence."
-		}
-	}
-	Procedure MainTermination {
-		Body: {
-			return 1;
-		}
-		Comment: {
-			"Add termination statements here that do not require all libraries to be still alive.
-			Return 1 to allow the termination sequence to continue.
-			Return 0 if you want to cancel the termination sequence.
-			It is recommended to only use the procedure PreMainTermination to cancel the termination sequence and let this procedure always return 1."
-		}
+	Section Application_testing_tracing_and_debugging {
+		Procedure MainExecution;
 	}
 }
