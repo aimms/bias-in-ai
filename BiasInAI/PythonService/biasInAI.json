@@ -1,0 +1,13 @@
+{
+    "serviceId": "MultiplicationService",
+    "image" : {
+        "name": "services/aimms-anaconda-service",
+        "tag" : "2022.10-3061b759"
+    },
+    "appConfig": {
+        "argv" : [ "python3", "main.py" ],
+        "env"  : [
+        ],
+        "listenPort" : 8000
+    }
+}

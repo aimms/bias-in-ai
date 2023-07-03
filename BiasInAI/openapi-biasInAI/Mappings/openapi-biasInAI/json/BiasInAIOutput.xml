@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<AimmsJSONMapping iterative-reset="biasInAI::i_childInstance,dex::schema::childNode,dex::schema::extbinding">
+	<ExternalBinding binds-to="biasInAI::i_instance" binding="biasInAI::CurrentInstance" />
+	<ObjectMapping>
+		<ValueMapping name="is_toxic" write-defaults="1" maps-to="biasInAI::_BiasInAIOutput::is_toxic(biasInAI::i_instance)" number-type="integer" />
+	</ObjectMapping>
+</AimmsJSONMapping>

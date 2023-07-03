@@ -25,6 +25,10 @@ Model Main_BiasInAI {
 		Parameter p_target {
 			IndexDomain: i_id;
 		}
+		Parameter bp_target {
+			IndexDomain: i_id;
+			Definition: 1 $ ( p_target(i_id) > 0.7 );
+		}
 		StringParameter sp_commentText {
 			IndexDomain: i_id;
 		}
@@ -273,12 +277,52 @@ Model Main_BiasInAI {
 					InitialData: data {};
 				}
 			}
+			Section Results {
+				StringParameter sp_titleCommentToInvestigate {
+					Definition: "Please enter the comment you want to invesigate below";
+				}
+				StringParameter sp_titleToxityResult {
+					Definition: "Is the above comment toxic?";
+				}
+				StringParameter sp_commentToInvestigate;
+				Parameter bp_commentInvestigatedIsToxic {
+					Range: binary;
+				}
+				StringParameter sp_resultPageSecondaryActions {
+					IndexDomain: (webui::indexPageExtension,webui::indexPageActionSpec);
+					Definition: {
+						{
+							( '1', 'displaytext' ) : "Check",  
+							( '1', 'icon'        ) : "aimms-theater",  
+							( '1', 'procedure'   ) : "pr_actionInvestigateWhetherEnteredCommentIsToxic",  
+							( '1', 'state'       ) : "Active"
+						}
+					}
+				}
+				Procedure pr_pageOpenResultsPage {
+					Body: {
+						if not p_def_cardID then
+							pr_importDataset();
+						endif ;
+						
+						sp_commentToInvestigate := "black is black"  ; ! "<please replace this with \nthe comment you want to investigate>" ;
+						
+						currentInputs -= data { bp_commentInvestigatedIsToxic };
+					}
+				}
+				Procedure pr_actionInvestigateWhetherEnteredCommentIsToxic {
+					Body: {
+						
+						pr_determineToxic();
+					}
+				}
+			}
 		}
 	}
 	Section Application_initialization_and_termination {
 		Procedure MainInitialization {
 			Body: {
-				ProfilerStart();
+				!ProfilerStart();
 			}
 			Comment: "Add initialization statements here that do NOT require any library being initialized already.";
 		}
@@ -286,6 +330,22 @@ Model Main_BiasInAI {
 			Comment: {
 				"Add initialization statements here that require that the libraries are already initialized properly,
 				or add statements that require the Data Management module to be initialized."
+			}
+		}
+		Procedure pr_startup {
+			Body: {
+				dex::ReadAllMappings();
+				
+				if pro::GetPROEndPoint() then
+					raise error "Initializing server on the AIMMS Cloud not yet implemented." ;
+					! See however, https://gitlab.aimms.com/joris/aimms-with-python-service/#making-the-python-sources-available-in-aimms-pro-storage
+					! for initializing the server in the AIMMS Cloud.
+				else
+					! Just use the service started by PyCharm on the biasInAI project.
+					biasInAI::api::APIServer :=  "http://localhost:8000" ;
+				endif ;
+				
+				display dex::Mappings ;
 			}
 		}
 		Procedure PreMainTermination {
@@ -313,5 +373,100 @@ Model Main_BiasInAI {
 	}
 	Section Application_testing_tracing_and_debugging {
 		Procedure MainExecution;
+	}
+	Section Leverage_biasInAI_service {
+		Procedure pr_determineToxic {
+			Body: {
+				pr_callBiasInAI();
+				_p_responseRetrieved := dex::client::WaitForResponses(timeout : 30 * 1000 /* milli secnds */);
+				if not _p_responseRetrieved then
+					raise error "no response within 30 seconds" ;
+				endif ;
+			}
+			Parameter _p_responseRetrieved;
+		}
+		Procedure pr_callBiasInAI {
+			Body: {
+				! Starting current call.
+				biasInAI::api::NewCallInstance(ep_callInstance);
+				
+				block ! Fill in the data for making the request.
+				
+					! Pass the data from the data model to the corresponding data in the biasInAI library.
+					biasInAI::_BiasInAIInput::no_observations(ep_callInstance) := p_def_cardID ;
+					biasInAI::_BiasInAIInput::new_comment(ep_callInstance) := sp_commentToInvestigate ;
+					biasInAI::_BiasInAIInput::_comments::comments_iter := ElementRange( 1, p_def_cardID );
+					biasInAI::_BiasInAIInput::_target::target_iter := ElementRange( 1, p_def_cardID );
+					_ep_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) := 
+						element( s_ids, val( biasInAI::_BiasInAIInput::_comments::i_comments ) );
+					biasInAI::_BiasInAIInput::_comments::Items(ep_callInstance, biasInAI::_BiasInAIInput::_comments::i_comments) := 
+						sp_commentText( _ep_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) ) ;
+					biasInAI::_BiasInAIInput::_target::Items(ep_callInstance, biasInAI::_BiasInAIInput::_comments::i_comments) := 
+						bp_target( _ep_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) ) ;
+				
+					block ! Check if we passed the data corectly.
+						if card( biasInAI::_BiasInAIInput::_comments::Items ) <> p_def_cardID then
+							raise error "internal error passing data \'comments\'" ;
+						endif ;
+						if card( biasInAI::_BiasInAIInput::_target::Items ) <> p_def_cardID then
+							raise error "internal error passing data \'target\'" ;
+						endif ;
+					endblock ;
+				endblock ;
+				
+				! Install hook, which will copy the data or handle the error
+				biasInAI::api::compute_compute_post::UserResponseHook := 
+					'pr_responseHook' ;
+				
+				! Start the request.
+				biasInAI::api::compute_compute_post::apiCall(ep_callInstance);
+			}
+			ElementParameter ep_callInstance {
+				Range: biasInAI::Instances;
+			}
+			ElementParameter _ep_iterToId {
+				IndexDomain: biasInAI::_BiasInAIInput::_comments::i_comments;
+				Range: s_ids;
+			}
+		}
+		Procedure pr_responseHook {
+			Arguments: (ep_callInstance);
+			Body: {
+				_ep_status := biasInAI::api::CallStatusCode(ep_callInstance);
+				
+				if StringLength( sp_commentToInvestigate ) > 5 then
+					_sp_cmtShort := substring( sp_commentToInvestigate, 1, 5 ) + "..." ;
+				else
+					_sp_cmtShort := sp_commentToInvestigate ;
+				endif ;
+				switch (_ep_status) do
+					'200': ! Call went ok. 
+						bp_commentInvestigatedIsToxic := biasInAI::_BiasInAIOutput::is_toxic( ep_callInstance );
+						biasInAI::_BiasInAIInput::EmptyInstance(  ep_callInstance );
+						biasInAI::_BiasInAIOutput::EmptyInstance( ep_callInstance );
+				
+					'422': ! HTTP validation error.
+					default:
+						raise error formatString("biasInAI::isToxic(%s) failed (instance: \'%e\', status: %e, error: %e): %s",
+							_sp_cmtShort, ep_callInstance, 
+							biasInAI::api::CallStatusCode(ep_callInstance), 
+							biasInAI::api::CallErrorCode(ep_callInstance),
+							"" ! Todo: work on the error elaboration!
+							);
+				
+				endswitch;
+			}
+			Comment: "Prototype that any request or response user hook procedure must adhere to";
+			DeclarationSection Locals {
+				ElementParameter ep_callInstance {
+					Range: dex::Instances;
+					Property: Input;
+				}
+				ElementParameter _ep_status {
+					Range: dex::HTTPStatusCodes;
+				}
+				StringParameter _sp_cmtShort;
+			}
+		}
 	}
 }

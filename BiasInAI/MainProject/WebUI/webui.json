@@ -176,6 +176,35 @@
     "layoutId": {
       "literal": "Layout1"
     },
+    "onload": {
+      "aimms": {
+        "run": "pr_pageOpenResultsPage"
+      }
+    },
+    "secondarypageactions": {
+      "aimms": {
+        "contents": [
+          "sp_resultPageSecondaryActions"
+        ],
+        "slices": [
+          {
+            "identifier": "sp_resultPageSecondaryActions",
+            "slice": [
+              {
+                "index": "webui::indexPageExtension",
+                "type": "free",
+                "value": "webui::indexPageExtension"
+              },
+              {
+                "index": "webui::indexPageActionSpec",
+                "type": "free",
+                "value": "webui::indexPageActionSpec"
+              }
+            ]
+          }
+        ]
+      }
+    },
     "widgets": {
       "literal": [
         {
@@ -409,16 +438,66 @@
     "aimms.widget.type": {
       "literal": "scalar"
     },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "sp_commentToInvestigate"
+        ]
+      }
+    },
+    "contents.labels.visible": {
+      "literal": 0
+    },
+    "multi.line": {
+      "literal": 1
+    },
     "name": {
       "literal": "scalarCommentInvestigated"
+    },
+    "title": {
+      "aimms": {
+        "contents": [
+          "sp_titleCommentToInvestigate"
+        ],
+        "slices": []
+      }
+    },
+    "views": {
+      "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0"
+      ]
     }
   },
   "widgets/scalarIsAboveCommentToxic": {
     "aimms.widget.type": {
       "literal": "scalar"
     },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "bp_commentInvestigatedIsToxic"
+        ]
+      }
+    },
+    "contents.labels.visible": {
+      "literal": 0
+    },
     "name": {
       "literal": "scalarIsAboveCommentToxic"
+    },
+    "title": {
+      "aimms": {
+        "contents": [
+          "sp_titleToxityResult"
+        ],
+        "slices": []
+      }
+    },
+    "views": {
+      "literal": {}
     }
   },
   "widgets/scl_paggedTable": {
@@ -439,6 +518,9 @@
     },
     "name": {
       "literal": "scl_paggedTable"
+    },
+    "views": {
+      "literal": {}
     }
   },
   "widgets/tbl_dataset": {
@@ -996,6 +1078,9 @@
     },
     "title": {
       "literal": "Raw Dataset"
+    },
+    "views": {
+      "literal": {}
     }
   },
   "widgets/txt_problemDescription": {

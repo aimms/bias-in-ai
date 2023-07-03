@@ -4,4 +4,5 @@
 	<Library System="true" Path="AimmsPro" />
 	<Library System="true" Path="AimmsWebUI" />
 	<RepositoryLibrary UUID="BDF54E1C-AF05-4D77-856C-F3C05F20FFB8" Name="AimmsDEX" Version="2.1.1.11" />
+	<Library Path=".\openapi-biasInAI" />
 </References>

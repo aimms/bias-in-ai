@@ -19,6 +19,7 @@ use_UTC_forCaseAndStartEndDate 1
 * XA 16
 * NETSOL
 * Environment
+Startup_Procedure "pr_startup"
 Default_UI 0
 WebUI_Maximum_Number_Of_Entries_In_Widget 1000000
 Open_WebUI_on_Startup 1
