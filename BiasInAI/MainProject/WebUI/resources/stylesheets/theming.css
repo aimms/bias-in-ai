@@ -1,0 +1,30 @@
+:root {
+  --primaryDark: #7188dd;
+  --primaryDarker: #3351C5;
+  --primary90Transparent: #3350c546;
+  --secondary: #e9bc38;
+  --secondary90Transparent: #e9bd387c;
+
+  --bg_app-logo: 15px 50% / 45px no-repeat url(/app-resources/resources/images/bias.png); /*app logo*/
+  --spacing_app-logo_width: 60px;
+  --color_border_app-header-divider: var(--secondary); /*line color after header*/
+
+  --color_bg_workflow_current: var(--primaryDarker); /*bg color when step is selected*/
+  --color_workflow_active: var(--primaryDarker); /*font and icon color when step is active*/
+
+  --color_bg_app-canvas: rgb(249, 249, 249); /*background color*/
+  --color_bg_widget-header: var(--primaryDarker); /*widget header background color*/
+  --border_widget-header: 2px solid var(--secondary); /*line color after widget header*/
+
+  --color_text_edit-select-link: var(--primaryDark);
+  --color_text_widget-header: white;
+
+  --color_bg_button_primary: var(--primaryDarker);
+  --color_bg_button_primary_hover: var(--primaryDark);
+}
+
+
+.title-addon {
+  text-shadow: 1px 1px 0px var(--secondary90Transparent);
+  
+}

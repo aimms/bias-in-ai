@@ -1,0 +1,16 @@
+.annotation-red-chart {
+  fill: var(--secondary);
+}
+
+.annotation-not-red-chart {
+  fill: var(--primaryDark);
+}
+
+.annotation-red-input  {
+	Border: 3px solid red;
+  border-radius: 3px;
+}
+.annotation-green-input  {
+	Border: 1px solid green;
+  border-radius: 3px;
+}

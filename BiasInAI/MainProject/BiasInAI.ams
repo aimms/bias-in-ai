@@ -21,6 +21,7 @@ Model Main_BiasInAI {
 		}
 		Set s_ids {
 			Index: i_id;
+			Parameter: ep_id;
 		}
 		Parameter p_target {
 			IndexDomain: i_id;
@@ -174,6 +175,8 @@ Model Main_BiasInAI {
 				        1,                              ! empty range sets
 				        1                               ! reset 'iterative-binds-to'
 				);
+				
+				pr_changeQuantityElementsPerPage;
 			}
 		}
 	}
@@ -181,6 +184,9 @@ Model Main_BiasInAI {
 		Procedure pr_empty;
 		StringParameter sp_logo {
 			Definition: "aimms_logo.png";
+		}
+		StringParameter sp_def_readonly {
+			Definition: "readonly";
 		}
 		Section Workflow {
 			StringParameter sp_myWorkflows {
@@ -243,11 +249,12 @@ Model Main_BiasInAI {
 				}
 				Set s_def_pages {
 					Index: i_page;
-					Definition: if p_def_numberOfPages then {1 .. p_def_numberOfPages} else {} endif;
+					Definition: {
+						{1 .. p_def_numberOfPages}
+					}
 				}
 				ElementParameter ep_currentpage {
 					Range: s_def_pages;
-					InitialData: '';
 				}
 				Set s_def_idsPerPage {
 					SubsetOf: s_ids;
@@ -268,27 +275,35 @@ Model Main_BiasInAI {
 				}
 				Parameter p_quantityElementsPerPage {
 					Range: [0, 50000];
-					InitialData: 25;
+					InitialData: 450;
 					webui::UponChangeProcedure: pr_changeQuantityElementsPerPage;
 				}
 				Parameter p_calc_idPerPage {
 					IndexDomain: (i_id,i_page);
 					Range: binary;
-					InitialData: data {};
+				}
+				StringParameter sp_def_inputPageSecondaryActions {
+					IndexDomain: (webui::indexPageExtension,webui::indexPageActionSpec);
+					Definition: {
+						{
+							( '1', 'displaytext' ) : "Import",  
+							( '1', 'icon'        ) : "aimms-upload",  
+							( '1', 'procedure'   ) : "pr_importDataset",  
+							( '1', 'state'       ) : "Active"
+						}
+					}
 				}
 			}
 			Section Results {
-				StringParameter sp_titleCommentToInvestigate {
-					Definition: "Please enter the comment you want to invesigate below";
+				StringParameter sp_def_tooltipCommentToInvestigate {
+					Definition: {
+						"Please enter the comment you want to invesigate here!"
+					}
 				}
-				StringParameter sp_titleToxityResult {
-					Definition: "Is the above comment toxic?";
+				StringParameter sp_queryToInvestigate {
+					webui::TooltipIdentifier: sp_def_tooltipCommentToInvestigate;
 				}
-				StringParameter sp_commentToInvestigate;
-				Parameter bp_commentInvestigatedIsToxic {
-					Range: binary;
-				}
-				StringParameter sp_resultPageSecondaryActions {
+				StringParameter sp_def_resultPageSecondaryActions {
 					IndexDomain: (webui::indexPageExtension,webui::indexPageActionSpec);
 					Definition: {
 						{
@@ -299,15 +314,44 @@ Model Main_BiasInAI {
 						}
 					}
 				}
+				Set s_askedQueries {
+					Index: i_query;
+					Parameter: ep_query;
+				}
+				Set s_def_queryTypes {
+					Index: i_qType;
+					Definition: {
+						{'Toxic', 'Not Toxic'}
+					}
+				}
+				ElementParameter ep_calc_queryAnswer {
+					IndexDomain: i_query;
+					Range: s_def_queryTypes;
+					webui::FlagsIdentifier: sp_def_readonly;
+				}
+				StringParameter sp_queryAsked {
+					IndexDomain: i_query;
+					webui::FlagsIdentifier: sp_def_readonly;
+				}
+				Parameter p_def_queryTypePercentage {
+					IndexDomain: i_qType;
+					Definition: sum(i_query, ep_calc_queryAnswer(i_query) = i_qType);
+				}
+				Parameter bp_calc_commentInvestigatedIsToxic {
+					Range: binary;
+					Comment: "raw result from Python";
+				}
+				StringParameter sp_calc_imageQueryAnswer;
 				Procedure pr_pageOpenResultsPage {
 					Body: {
 						if not p_def_cardID then
 							pr_importDataset();
 						endif ;
 						
-						sp_commentToInvestigate := "black is black"  ; ! "<please replace this with \nthe comment you want to investigate>" ;
+						sp_queryToInvestigate := "<type query to check>" ;
+						sp_calc_imageQueryAnswer := "question.png";
 						
-						currentInputs -= data { bp_commentInvestigatedIsToxic };
+						currentInputs -= data { bp_calc_commentInvestigatedIsToxic };
 					}
 				}
 				Procedure pr_actionInvestigateWhetherEnteredCommentIsToxic {
@@ -320,18 +364,6 @@ Model Main_BiasInAI {
 		}
 	}
 	Section Application_initialization_and_termination {
-		Procedure MainInitialization {
-			Body: {
-				!ProfilerStart();
-			}
-			Comment: "Add initialization statements here that do NOT require any library being initialized already.";
-		}
-		Procedure PostMainInitialization {
-			Comment: {
-				"Add initialization statements here that require that the libraries are already initialized properly,
-				or add statements that require the Data Management module to be initialized."
-			}
-		}
 		Procedure pr_startup {
 			Body: {
 				dex::ReadAllMappings();
@@ -348,6 +380,26 @@ Model Main_BiasInAI {
 				display dex::Mappings ;
 			}
 		}
+		Procedure MainInitialization {
+			Comment: "Add initialization statements here that do NOT require any library being initialized already.";
+		}
+		Procedure PostMainInitialization {
+			Body: {
+				webui::SetProgressMessage("Initializing dataset...");
+				pr_importDataset;
+				
+				webui::SetProgressMessage("Initializing inputs page...");
+				ep_currentpage := first(i_page);
+				p_quantityElementsPerPage := 450;
+				
+				pr_changeQuantityElementsPerPage;
+			}
+			Comment: {
+				"Add initialization statements here that require that the libraries are already initialized properly,
+				or add statements that require the Data Management module to be initialized."
+			}
+		}
+		Procedure MainExecution;
 		Procedure PreMainTermination {
 			Body: {
 				return 1 ; ! We don't work with cases.
@@ -371,38 +423,46 @@ Model Main_BiasInAI {
 			}
 		}
 	}
-	Section Application_testing_tracing_and_debugging {
-		Procedure MainExecution;
-	}
 	Section Leverage_biasInAI_service {
 		Procedure pr_determineToxic {
 			Body: {
+				SetElementAdd(s_askedQueries, ep_query, card(i_query) + 1);
+				sp_queryAsked(ep_query) := sp_queryToInvestigate;
+				sp_calc_imageQueryAnswer := "question.png";
+				
+				webui::SetProgressMessage("Investigating query...");
+				
 				pr_callBiasInAI();
-				_p_responseRetrieved := dex::client::WaitForResponses(timeout : 30 * 1000 /* milli secnds */);
-				if not _p_responseRetrieved then
+				
+				p_loc_responseRetrieved := dex::client::WaitForResponses(timeout : 30 * 1000 /* milli secnds */);
+				
+				if not p_loc_responseRetrieved then
 					raise error "no response within 30 seconds" ;
 				endif ;
 			}
-			Parameter _p_responseRetrieved;
+			Parameter p_loc_responseRetrieved;
 		}
 		Procedure pr_callBiasInAI {
 			Body: {
 				! Starting current call.
-				biasInAI::api::NewCallInstance(ep_callInstance);
+				biasInAI::api::NewCallInstance(ep_loc_callInstance);
 				
 				block ! Fill in the data for making the request.
 				
 					! Pass the data from the data model to the corresponding data in the biasInAI library.
-					biasInAI::_BiasInAIInput::no_observations(ep_callInstance) := p_def_cardID ;
-					biasInAI::_BiasInAIInput::new_comment(ep_callInstance) := sp_commentToInvestigate ;
+					biasInAI::_BiasInAIInput::no_observations(ep_loc_callInstance) := p_def_cardID ;
+					biasInAI::_BiasInAIInput::new_comment(ep_loc_callInstance) := sp_queryToInvestigate ;
 					biasInAI::_BiasInAIInput::_comments::comments_iter := ElementRange( 1, p_def_cardID );
 					biasInAI::_BiasInAIInput::_target::target_iter := ElementRange( 1, p_def_cardID );
-					_ep_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) := 
-						element( s_ids, val( biasInAI::_BiasInAIInput::_comments::i_comments ) );
-					biasInAI::_BiasInAIInput::_comments::Items(ep_callInstance, biasInAI::_BiasInAIInput::_comments::i_comments) := 
-						sp_commentText( _ep_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) ) ;
-					biasInAI::_BiasInAIInput::_target::Items(ep_callInstance, biasInAI::_BiasInAIInput::_comments::i_comments) := 
-						bp_target( _ep_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) ) ;
+				
+					ep_loc_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) 
+					:=  element( s_ids, val( biasInAI::_BiasInAIInput::_comments::i_comments ) );
+				
+					biasInAI::_BiasInAIInput::_comments::Items(ep_loc_callInstance, biasInAI::_BiasInAIInput::_comments::i_comments) 
+					:= 	sp_commentText( ep_loc_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) ) ;
+				
+					biasInAI::_BiasInAIInput::_target::Items(ep_loc_callInstance, biasInAI::_BiasInAIInput::_comments::i_comments) 
+					:=  bp_target( ep_loc_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) ) ;
 				
 					block ! Check if we passed the data corectly.
 						if card( biasInAI::_BiasInAIInput::_comments::Items ) <> p_def_cardID then
@@ -415,42 +475,44 @@ Model Main_BiasInAI {
 				endblock ;
 				
 				! Install hook, which will copy the data or handle the error
-				biasInAI::api::compute_compute_post::UserResponseHook := 
-					'pr_responseHook' ;
+				biasInAI::api::compute_compute_post::UserResponseHook 
+				:=  'pr_responseHook' ;
 				
 				! Start the request.
-				biasInAI::api::compute_compute_post::apiCall(ep_callInstance);
+				biasInAI::api::compute_compute_post::apiCall(ep_loc_callInstance);
 			}
-			ElementParameter ep_callInstance {
+			ElementParameter ep_loc_callInstance {
 				Range: biasInAI::Instances;
 			}
-			ElementParameter _ep_iterToId {
+			ElementParameter ep_loc_iterToId {
 				IndexDomain: biasInAI::_BiasInAIInput::_comments::i_comments;
 				Range: s_ids;
 			}
 		}
 		Procedure pr_responseHook {
-			Arguments: (ep_callInstance);
+			Arguments: (ep_in_callInstance);
 			Body: {
-				_ep_status := biasInAI::api::CallStatusCode(ep_callInstance);
+				ep_loc_status := biasInAI::api::CallStatusCode(ep_in_callInstance);
 				
-				if StringLength( sp_commentToInvestigate ) > 5 then
-					_sp_cmtShort := substring( sp_commentToInvestigate, 1, 5 ) + "..." ;
+				if StringLength( sp_queryToInvestigate ) > 5 then
+					sp_log_cmtShort := substring( sp_queryToInvestigate, 1, 5 ) + "..." ;
 				else
-					_sp_cmtShort := sp_commentToInvestigate ;
+					sp_log_cmtShort := sp_queryToInvestigate ;
 				endif ;
-				switch (_ep_status) do
+				switch (ep_loc_status) do
 					'200': ! Call went ok. 
-						bp_commentInvestigatedIsToxic := biasInAI::_BiasInAIOutput::is_toxic( ep_callInstance );
-						biasInAI::_BiasInAIInput::EmptyInstance(  ep_callInstance );
-						biasInAI::_BiasInAIOutput::EmptyInstance( ep_callInstance );
+						bp_calc_commentInvestigatedIsToxic := biasInAI::_BiasInAIOutput::is_toxic( ep_in_callInstance );
+						ep_calc_queryAnswer(ep_query) := if bp_calc_commentInvestigatedIsToxic then 'Toxic' else 'Not Toxic' endif;
+						sp_calc_imageQueryAnswer := if bp_calc_commentInvestigatedIsToxic then "toxic.png" else "not_toxic.png" endif;
+						biasInAI::_BiasInAIInput::EmptyInstance(  ep_in_callInstance );
+						biasInAI::_BiasInAIOutput::EmptyInstance( ep_in_callInstance );
 				
 					'422': ! HTTP validation error.
 					default:
 						raise error formatString("biasInAI::isToxic(%s) failed (instance: \'%e\', status: %e, error: %e): %s",
-							_sp_cmtShort, ep_callInstance, 
-							biasInAI::api::CallStatusCode(ep_callInstance), 
-							biasInAI::api::CallErrorCode(ep_callInstance),
+							sp_log_cmtShort, ep_in_callInstance, 
+							biasInAI::api::CallStatusCode(ep_in_callInstance), 
+							biasInAI::api::CallErrorCode(ep_in_callInstance),
 							"" ! Todo: work on the error elaboration!
 							);
 				
@@ -458,14 +520,14 @@ Model Main_BiasInAI {
 			}
 			Comment: "Prototype that any request or response user hook procedure must adhere to";
 			DeclarationSection Locals {
-				ElementParameter ep_callInstance {
+				ElementParameter ep_in_callInstance {
 					Range: dex::Instances;
 					Property: Input;
 				}
-				ElementParameter _ep_status {
+				ElementParameter ep_loc_status {
 					Range: dex::HTTPStatusCodes;
 				}
-				StringParameter _sp_cmtShort;
+				StringParameter sp_log_cmtShort;
 			}
 		}
 	}

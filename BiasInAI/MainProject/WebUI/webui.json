@@ -106,6 +106,55 @@
       }
     }
   },
+  "layouts/custom_5e66e8c0-a39e-49f6-ad04-d7a616c2e416": {
+    "definition": {
+      "literal": {
+        "componentName": "Grid",
+        "props": {
+          "gridTemplateColumns": "1fr 0.3fr",
+          "gridTemplateRows": "1fr 1fr",
+          "gridTemplateAreas": "\"area-a area-b\" \"area-c area-d\""
+        },
+        "items": [
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-a",
+              "name": "Area A",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-b",
+              "name": "Area B",
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-c",
+              "name": "Area C",
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-d",
+              "name": "Area D",
+              "gridAutoFlow": "row"
+            }
+          }
+        ]
+      }
+    },
+    "displayName": {
+      "literal": "Layout2 Copy"
+    }
+  },
   "layouts/custom_b849d869-6dc6-4262-8a0a-9c5712f8b49b": {
     "definition": {
       "literal": {
@@ -162,19 +211,34 @@
     "bindings": {
       "literal": [
         {
-          "widgetUri": "scalarCommentInvestigated",
-          "gridArea": "area-a",
-          "dndId": "area-ascalarCommentInvestigated0"
+          "widgetUri": "img_queryAnswer",
+          "gridArea": "area-b",
+          "dndId": "area-aimg_queryAnswer4"
+        },
+        {
+          "widgetUri": "tbl_historicalQueries",
+          "gridArea": "area-c",
+          "dndId": "area-ctbl_historicalQueries0"
+        },
+        {
+          "widgetUri": "tree_queryAnswered",
+          "gridArea": "area-d",
+          "dndId": "area-dtree_queryAnswered1"
         },
         {
           "widgetUri": "scalarIsAboveCommentToxic",
-          "gridArea": "area-b",
-          "dndId": "Unassigned widgetsscalarIsAboveCommentToxic"
+          "gridArea": "Unassigned widgets",
+          "dndId": "Unassigned widgetsscalarIsAboveCommentToxic2"
+        },
+        {
+          "widgetUri": "scalarCommentInvestigated",
+          "gridArea": "area-a",
+          "dndId": "area-ascalarCommentInvestigated3"
         }
       ]
     },
     "layoutId": {
-      "literal": "Layout1"
+      "literal": "custom_5e66e8c0-a39e-49f6-ad04-d7a616c2e416"
     },
     "onload": {
       "aimms": {
@@ -184,11 +248,11 @@
     "secondarypageactions": {
       "aimms": {
         "contents": [
-          "sp_resultPageSecondaryActions"
+          "sp_def_resultPageSecondaryActions"
         ],
         "slices": [
           {
-            "identifier": "sp_resultPageSecondaryActions",
+            "identifier": "sp_def_resultPageSecondaryActions",
             "slice": [
               {
                 "index": "webui::indexPageExtension",
@@ -216,6 +280,27 @@
         },
         {
           "uri": "scalarIsAboveCommentToxic",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "tbl_historicalQueries",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "tree_queryAnswered",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "img_queryAnswer",
           "layoutInfo": {
             "width": "2",
             "height": "1"
@@ -286,11 +371,6 @@
           "dndId": "area-bscl_paggedTable1"
         },
         {
-          "widgetUri": "btn_import",
-          "gridArea": "area-d",
-          "dndId": "area-dbtn_import2"
-        },
-        {
           "widgetUri": "tbl_dataset",
           "gridArea": "area-a",
           "dndId": "area-atbl_dataset3"
@@ -299,6 +379,30 @@
     },
     "layoutId": {
       "literal": "custom_b849d869-6dc6-4262-8a0a-9c5712f8b49b"
+    },
+    "secondarypageactions": {
+      "aimms": {
+        "contents": [
+          "sp_def_inputPageSecondaryActions"
+        ],
+        "slices": [
+          {
+            "identifier": "sp_def_inputPageSecondaryActions",
+            "slice": [
+              {
+                "index": "webui::indexPageExtension",
+                "type": "free",
+                "value": "webui::indexPageExtension"
+              },
+              {
+                "index": "webui::indexPageActionSpec",
+                "type": "free",
+                "value": "webui::indexPageActionSpec"
+              }
+            ]
+          }
+        ]
+      }
     },
     "widgets": {
       "literal": [
@@ -325,13 +429,6 @@
         },
         {
           "uri": "btn_backwards",
-          "layoutInfo": {
-            "width": "2",
-            "height": "1"
-          }
-        },
-        {
-          "uri": "btn_import",
           "layoutInfo": {
             "width": "2",
             "height": "1"
@@ -402,23 +499,6 @@
       "literal": ">>"
     }
   },
-  "widgets/btn_import": {
-    "action": {
-      "literal": {
-        "type": "procedure",
-        "value": "pr_importDataset"
-      }
-    },
-    "aimms.widget.type": {
-      "literal": "button"
-    },
-    "name": {
-      "literal": "btn_import"
-    },
-    "title": {
-      "literal": "Import Dataset"
-    }
-  },
   "widgets/img_homeLogo": {
     "aimms.widget.type": {
       "literal": "image"
@@ -434,6 +514,24 @@
       "literal": "img_homeLogo"
     }
   },
+  "widgets/img_queryAnswer": {
+    "aimms.widget.type": {
+      "literal": "image"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "sp_calc_imageQueryAnswer"
+        ]
+      }
+    },
+    "name": {
+      "literal": "img_queryAnswer"
+    },
+    "widget.visible": {
+      "literal": 1
+    }
+  },
   "widgets/scalarCommentInvestigated": {
     "aimms.widget.type": {
       "literal": "scalar"
@@ -441,7 +539,7 @@
     "contents": {
       "aimms": {
         "contents": [
-          "sp_commentToInvestigate"
+          "sp_queryToInvestigate"
         ]
       }
     },
@@ -455,12 +553,7 @@
       "literal": "scalarCommentInvestigated"
     },
     "title": {
-      "aimms": {
-        "contents": [
-          "sp_titleCommentToInvestigate"
-        ],
-        "slices": []
-      }
+      "literal": "Query to Investigate"
     },
     "views": {
       "literal": {}
@@ -478,7 +571,7 @@
     "contents": {
       "aimms": {
         "contents": [
-          "bp_commentInvestigatedIsToxic"
+          "bp_calc_commentInvestigatedIsToxic"
         ]
       }
     },
@@ -489,12 +582,7 @@
       "literal": "scalarIsAboveCommentToxic"
     },
     "title": {
-      "aimms": {
-        "contents": [
-          "sp_titleToxityResult"
-        ],
-        "slices": []
-      }
+      "literal": "Is the Query Toxic?"
     },
     "views": {
       "literal": {}
@@ -1067,11 +1155,203 @@
         {
           "type": "colHeader",
           "colKey": {
+            "<IDENTIFIER-SET>": "p_homosexualGayLesbian"
+          },
+          "width": 32.95
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_intellectualLearningDisability"
+          },
+          "width": 39.17
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_toxicityAnnotatorCount"
+          },
+          "width": 29.5
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_identityAnnotatorCount"
+          },
+          "width": 29.35
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_sexualExplicit"
+          },
+          "width": 18.36
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_likes"
+          },
+          "width": 9.79
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_funny"
+          },
+          "width": 10.2
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
             "<IDENTIFIER-SET>": "sp_rating"
           },
-          "width": 16.75
+          "width": 15.44
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_articleID"
+          },
+          "width": 20.04
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_parentID"
+          },
+          "width": 19.38
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_white"
+          },
+          "width": 10.81
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_transgender"
+          },
+          "width": 16.93
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_psychiatricMentalIllness"
+          },
+          "width": 34.15
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_physicalDisability"
+          },
+          "width": 24.28
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_otherSexualOrientation"
+          },
+          "width": 29.78
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_otherraceethnicity"
+          },
+          "width": 28.58
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_muslim"
+          },
+          "width": 16.93
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_male"
+          },
+          "width": 9.79
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_latino"
+          },
+          "width": 12.04
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_jewish"
+          },
+          "width": 10
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_hindu"
+          },
+          "width": 11.02
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_female"
+          },
+          "width": 12.04
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_christian"
+          },
+          "width": 15.91
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_black"
+          },
+          "width": 9.59
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_threat"
+          },
+          "width": 9.79
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_insult"
+          },
+          "width": 9.18
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_obscene"
+          },
+          "width": 12.65
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "p_target"
+          },
+          "width": 10.81
         }
       ]
+    },
+    "default.column.width": {
+      "literal": 20
     },
     "name": {
       "literal": "tbl_dataset"
@@ -1080,7 +1360,866 @@
       "literal": "Raw Dataset"
     },
     "views": {
+      "literal": {
+        "views.0": {
+          "viewName": "unique",
+          "storedOptions": {
+            "aimms.widget.type": {
+              "literal": "table"
+            },
+            "contents": {
+              "aimms": {
+                "contents": [
+                  "p_target",
+                  "sp_commentText",
+                  "p_severeToxicity",
+                  "p_obscene",
+                  "p_identityAttack",
+                  "p_insult",
+                  "p_threat",
+                  "p_asian",
+                  "p_atheist",
+                  "p_bisexual",
+                  "p_black",
+                  "p_buddhist",
+                  "p_christian",
+                  "p_female",
+                  "p_heterosexual",
+                  "p_hindu",
+                  "p_homosexualGayLesbian",
+                  "p_intellectualLearningDisability",
+                  "p_jewish",
+                  "p_latino",
+                  "p_male",
+                  "p_muslim",
+                  "p_otherDisability",
+                  "p_otherGender",
+                  "p_otherraceethnicity",
+                  "p_otherReligion",
+                  "p_otherSexualOrientation",
+                  "p_physicalDisability",
+                  "p_psychiatricMentalIllness",
+                  "p_transgender",
+                  "p_white",
+                  "sp_createdDate",
+                  "p_publicationID",
+                  "p_parentID",
+                  "p_articleID",
+                  "sp_rating",
+                  "p_funny",
+                  "p_wow",
+                  "p_sad",
+                  "p_likes",
+                  "p_disagree",
+                  "p_sexualExplicit",
+                  "p_identityAnnotatorCount",
+                  "p_toxicityAnnotatorCount"
+                ],
+                "prefix": "aimms",
+                "partition": {
+                  "rowHeader": [
+                    "i_id"
+                  ],
+                  "colHeader": [
+                    "<IDENTIFIER-SET>"
+                  ],
+                  "aggregated": []
+                },
+                "totals": [
+                  {
+                    "indexName": "<IDENTIFIER-SET>",
+                    "operators": [
+                      "count_only_visible"
+                    ]
+                  }
+                ],
+                "slices": [
+                  {
+                    "identifier": "p_articleID",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_asian",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_atheist",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_bisexual",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_black",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_buddhist",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_christian",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_hindu",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_disagree",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "sp_rating",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "sp_createdDate",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "sp_commentText",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_wow",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_white",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_transgender",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_toxicityAnnotatorCount",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_threat",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_target",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_sexualExplicit",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_severeToxicity",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_sad",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_publicationID",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_psychiatricMentalIllness",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_physicalDisability",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_parentID",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_otherSexualOrientation",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_obscene",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_latino",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_jewish",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_insult",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_identityAttack",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_heterosexual",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_female",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_homosexualGayLesbian",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_identityAnnotatorCount",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_male",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_intellectualLearningDisability",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_muslim",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_otherDisability",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_otherGender",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_otherReligion",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_otherraceethnicity",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_funny",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  },
+                  {
+                    "identifier": "p_likes",
+                    "slice": [
+                      {
+                        "index": "i_id",
+                        "type": "subset",
+                        "value": "i_pg_id"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "contents.partition": {
+              "literal": {
+                "rowHeader": [
+                  "i_id"
+                ],
+                "colHeader": [
+                  "<IDENTIFIER-SET>"
+                ],
+                "aggregated": []
+              }
+            },
+            "custom.column.widths": {
+              "literal": [
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "sp_commentText"
+                  },
+                  "width": 46.64
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "sp_createdDate"
+                  },
+                  "width": 43.19
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_homosexualGayLesbian"
+                  },
+                  "width": 32.95
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_intellectualLearningDisability"
+                  },
+                  "width": 39.17
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_toxicityAnnotatorCount"
+                  },
+                  "width": 29.5
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_identityAnnotatorCount"
+                  },
+                  "width": 29.35
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_sexualExplicit"
+                  },
+                  "width": 18.36
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_likes"
+                  },
+                  "width": 9.79
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_funny"
+                  },
+                  "width": 10.2
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "sp_rating"
+                  },
+                  "width": 15.44
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_articleID"
+                  },
+                  "width": 20.04
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_parentID"
+                  },
+                  "width": 19.38
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_white"
+                  },
+                  "width": 10.81
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_transgender"
+                  },
+                  "width": 16.93
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_psychiatricMentalIllness"
+                  },
+                  "width": 34.15
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_physicalDisability"
+                  },
+                  "width": 24.28
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_otherSexualOrientation"
+                  },
+                  "width": 29.78
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_otherraceethnicity"
+                  },
+                  "width": 28.58
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_muslim"
+                  },
+                  "width": 16.93
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_male"
+                  },
+                  "width": 9.79
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_latino"
+                  },
+                  "width": 12.04
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_jewish"
+                  },
+                  "width": 10
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_hindu"
+                  },
+                  "width": 11.02
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_female"
+                  },
+                  "width": 12.04
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_christian"
+                  },
+                  "width": 15.91
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_black"
+                  },
+                  "width": 9.59
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_threat"
+                  },
+                  "width": 9.79
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_insult"
+                  },
+                  "width": 9.18
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_obscene"
+                  },
+                  "width": 12.65
+                },
+                {
+                  "type": "colHeader",
+                  "colKey": {
+                    "<IDENTIFIER-SET>": "p_target"
+                  },
+                  "width": 10.81
+                }
+              ]
+            },
+            "title": {
+              "literal": "Raw Dataset"
+            }
+          }
+        }
+      }
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0"
+      ]
+    },
+    "views.0.name": {
+      "literal": "unique"
+    },
+    "views.current": {
+      "literal": "views.0"
+    }
+  },
+  "widgets/tbl_historicalQueries": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "sp_queryAsked",
+          "ep_calc_queryAnswer"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "i_query"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "ep_queryAnswer"
+          },
+          "width": 19.84
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "sp_queryAsked"
+          },
+          "width": 59.8
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "i_query",
+          "width": 9.24
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "ep_calc_queryAnswer"
+          },
+          "width": 21.92
+        }
+      ]
+    },
+    "name": {
+      "literal": "tbl_historicalQueries"
+    },
+    "title": {
+      "literal": "Historical Queries"
+    },
+    "views": {
       "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0"
+      ]
+    }
+  },
+  "widgets/tree_queryAnswered": {
+    "aimms.widget.type": {
+      "literal": "treemap"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "p_def_queryTypePercentage"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rectangles": [
+          "i_qType"
+        ],
+        "aggregated": [
+          "<IDENTIFIER-SET>"
+        ]
+      }
+    },
+    "name": {
+      "literal": "tree_queryAnswered"
+    },
+    "views": {
+      "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0"
+      ]
     }
   },
   "widgets/txt_problemDescription": {
