@@ -2161,16 +2161,16 @@
           "width": 59.8
         },
         {
-          "type": "rowHeader",
-          "colKey": "i_query",
-          "width": 9.24
-        },
-        {
           "type": "colHeader",
           "colKey": {
             "<IDENTIFIER-SET>": "ep_calc_queryAnswer"
           },
           "width": 21.92
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "i_query",
+          "width": 11.23
         }
       ]
     },

@@ -327,6 +327,7 @@ Model Main_BiasInAI {
 				ElementParameter ep_calc_queryAnswer {
 					IndexDomain: i_query;
 					Range: s_def_queryTypes;
+					InitialData: '';
 					webui::FlagsIdentifier: sp_def_readonly;
 				}
 				StringParameter sp_queryAsked {
@@ -363,66 +364,6 @@ Model Main_BiasInAI {
 			}
 		}
 	}
-	Section Application_initialization_and_termination {
-		Procedure pr_startup {
-			Body: {
-				dex::ReadAllMappings();
-				
-				if pro::GetPROEndPoint() then
-					raise error "Initializing server on the AIMMS Cloud not yet implemented." ;
-					! See however, https://gitlab.aimms.com/joris/aimms-with-python-service/#making-the-python-sources-available-in-aimms-pro-storage
-					! for initializing the server in the AIMMS Cloud.
-				else
-					! Just use the service started by PyCharm on the biasInAI project.
-					biasInAI::api::APIServer :=  "http://localhost:8000" ;
-				endif ;
-				
-				display dex::Mappings ;
-			}
-		}
-		Procedure MainInitialization {
-			Comment: "Add initialization statements here that do NOT require any library being initialized already.";
-		}
-		Procedure PostMainInitialization {
-			Body: {
-				webui::SetProgressMessage("Initializing dataset...");
-				pr_importDataset;
-				
-				webui::SetProgressMessage("Initializing inputs page...");
-				ep_currentpage := first(i_page);
-				p_quantityElementsPerPage := 450;
-				
-				pr_changeQuantityElementsPerPage;
-			}
-			Comment: {
-				"Add initialization statements here that require that the libraries are already initialized properly,
-				or add statements that require the Data Management module to be initialized."
-			}
-		}
-		Procedure MainExecution;
-		Procedure PreMainTermination {
-			Body: {
-				return 1 ; ! We don't work with cases.
-				!return DataManagementExit();
-			}
-			Comment: {
-				"Add termination statements here that require all libraries to be still alive.
-				Return 1 if you allow the termination sequence to continue.
-				Return 0 if you want to cancel the termination sequence."
-			}
-		}
-		Procedure MainTermination {
-			Body: {
-				return 1;
-			}
-			Comment: {
-				"Add termination statements here that do not require all libraries to be still alive.
-				Return 1 to allow the termination sequence to continue.
-				Return 0 if you want to cancel the termination sequence.
-				It is recommended to only use the procedure PreMainTermination to cancel the termination sequence and let this procedure always return 1."
-			}
-		}
-	}
 	Section Leverage_biasInAI_service {
 		Procedure pr_determineToxic {
 			Body: {
@@ -434,7 +375,7 @@ Model Main_BiasInAI {
 				
 				pr_callBiasInAI();
 				
-				p_loc_responseRetrieved := dex::client::WaitForResponses(timeout : 30 * 1000 /* milli secnds */);
+				p_loc_responseRetrieved := dex::client::WaitForResponses(timeout : 30 * 1000 /* milli seconds */);
 				
 				if not p_loc_responseRetrieved then
 					raise error "no response within 30 seconds" ;
@@ -528,6 +469,66 @@ Model Main_BiasInAI {
 					Range: dex::HTTPStatusCodes;
 				}
 				StringParameter sp_log_cmtShort;
+			}
+		}
+	}
+	Section Application_initialization_and_termination {
+		Procedure pr_startup {
+			Body: {
+				dex::ReadAllMappings();
+				
+				if pro::GetPROEndPoint() then
+					raise error "Initializing server on the AIMMS Cloud not yet implemented." ;
+					! See however, https://gitlab.aimms.com/joris/aimms-with-python-service/#making-the-python-sources-available-in-aimms-pro-storage
+					! for initializing the server in the AIMMS Cloud.
+				else
+					! Just use the service started by PyCharm on the biasInAI project.
+					biasInAI::api::APIServer :=  "http://localhost:8000" ;
+				endif ;
+				
+				display dex::Mappings ;
+			}
+		}
+		Procedure MainInitialization {
+			Comment: "Add initialization statements here that do NOT require any library being initialized already.";
+		}
+		Procedure PostMainInitialization {
+			Body: {
+				webui::SetProgressMessage("Initializing dataset...");
+				pr_importDataset;
+				
+				webui::SetProgressMessage("Initializing inputs page...");
+				ep_currentpage := first(i_page);
+				p_quantityElementsPerPage := 450;
+				
+				pr_changeQuantityElementsPerPage;
+			}
+			Comment: {
+				"Add initialization statements here that require that the libraries are already initialized properly,
+				or add statements that require the Data Management module to be initialized."
+			}
+		}
+		Procedure MainExecution;
+		Procedure PreMainTermination {
+			Body: {
+				return 1 ; ! We don't work with cases.
+				!return DataManagementExit();
+			}
+			Comment: {
+				"Add termination statements here that require all libraries to be still alive.
+				Return 1 if you allow the termination sequence to continue.
+				Return 0 if you want to cancel the termination sequence."
+			}
+		}
+		Procedure MainTermination {
+			Body: {
+				return 1;
+			}
+			Comment: {
+				"Add termination statements here that do not require all libraries to be still alive.
+				Return 1 to allow the termination sequence to continue.
+				Return 0 if you want to cancel the termination sequence.
+				It is recommended to only use the procedure PreMainTermination to cancel the termination sequence and let this procedure always return 1."
 			}
 		}
 	}
