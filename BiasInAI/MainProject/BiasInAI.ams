@@ -217,6 +217,8 @@ Model Main_BiasInAI {
 			Section Inputs {
 				Procedure pr_changeQuantityElementsPerPage {
 					Body: {
+						webui::SetProgressMessage("Calculating elements per page...");
+						
 						empty p_calc_idPerPage;
 						
 						for i_id do
@@ -238,6 +240,11 @@ Model Main_BiasInAI {
 						endif;
 					}
 				}
+				Procedure pr_firstPage {
+					Body: {
+						ep_currentPage := first(i_page);
+					}
+				}
 				Procedure pr_nextPage {
 					Body: {
 						if ep_currentPage = last(i_page) then
@@ -245,6 +252,11 @@ Model Main_BiasInAI {
 						else  
 						    ep_currentPage += 1;
 						endif;
+					}
+				}
+				Procedure pr_lastPage {
+					Body: {
+						ep_currentPage := last(i_page);
 					}
 				}
 				Set s_def_pages {
@@ -276,7 +288,11 @@ Model Main_BiasInAI {
 				Parameter p_quantityElementsPerPage {
 					Range: [0, 50000];
 					InitialData: 450;
+					webui::TooltipIdentifier: sp_def_tooltipQuantityElementsPerPage;
 					webui::UponChangeProcedure: pr_changeQuantityElementsPerPage;
+				}
+				StringParameter sp_def_tooltipQuantityElementsPerPage {
+					Definition: "By changing this value, the quantity of elements per page will change.";
 				}
 				Parameter p_calc_idPerPage {
 					IndexDomain: (i_id,i_page);

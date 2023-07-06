@@ -161,8 +161,8 @@
         "componentName": "Grid",
         "props": {
           "gridTemplateColumns": "3fr 1fr",
-          "gridTemplateRows": "0.4fr 0.2fr 1fr",
-          "gridTemplateAreas": "\"area-a area-b\" \"area-a area-c\" \"area-a area-d\""
+          "gridTemplateRows": "0.4fr 0.1fr 0.1fr 1fr",
+          "gridTemplateAreas": "\"area-a area-b\" \"area-a area-c\" \"area-a area-d\" \"area-a area-e\""
         },
         "items": [
           {
@@ -194,6 +194,14 @@
             "props": {
               "gridArea": "area-d",
               "name": "Area D",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-e",
+              "name": "Area E",
               "gridAutoFlow": "row"
             }
           }
@@ -357,13 +365,13 @@
       "literal": [
         {
           "widgetUri": "btn_backwards",
-          "gridArea": "area-c",
-          "dndId": "area-cbtn_backwards0"
+          "gridArea": "area-d",
+          "dndId": "area-cbtn_backwards4"
         },
         {
           "widgetUri": "btn_forward",
-          "gridArea": "area-c",
-          "dndId": "area-ebtn_forward4"
+          "gridArea": "area-d",
+          "dndId": "area-dbtn_forward0"
         },
         {
           "widgetUri": "scl_paggedTable",
@@ -373,7 +381,17 @@
         {
           "widgetUri": "tbl_dataset",
           "gridArea": "area-a",
-          "dndId": "area-atbl_dataset3"
+          "dndId": "area-atbl_dataset2"
+        },
+        {
+          "widgetUri": "btn_firstpage",
+          "gridArea": "area-c",
+          "dndId": "area-cbtn_firstpage3"
+        },
+        {
+          "widgetUri": "btn_lastpage",
+          "gridArea": "area-c",
+          "dndId": "area-cbtn_lastpage5"
         }
       ]
     },
@@ -433,6 +451,20 @@
             "width": "2",
             "height": "1"
           }
+        },
+        {
+          "uri": "btn_firstpage",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "btn_lastpage",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
         }
       ]
     }
@@ -475,8 +507,31 @@
     "aimms.widget.type": {
       "literal": "button"
     },
+    "custom.tooltip": {
+      "literal": "Go to previous page"
+    },
     "name": {
       "literal": "btn_backwards"
+    },
+    "title": {
+      "literal": "<"
+    }
+  },
+  "widgets/btn_firstpage": {
+    "action": {
+      "literal": {
+        "type": "procedure",
+        "value": "pr_firstPage"
+      }
+    },
+    "aimms.widget.type": {
+      "literal": "button"
+    },
+    "custom.tooltip": {
+      "literal": "Go to first page"
+    },
+    "name": {
+      "literal": "btn_firstpage"
     },
     "title": {
       "literal": "<<"
@@ -492,8 +547,31 @@
     "aimms.widget.type": {
       "literal": "button"
     },
+    "custom.tooltip": {
+      "literal": "Go to next page"
+    },
     "name": {
       "literal": "btn_forward"
+    },
+    "title": {
+      "literal": ">"
+    }
+  },
+  "widgets/btn_lastpage": {
+    "action": {
+      "literal": {
+        "type": "procedure",
+        "value": "pr_lastPage"
+      }
+    },
+    "aimms.widget.type": {
+      "literal": "button"
+    },
+    "custom.tooltip": {
+      "literal": "Go to last page"
+    },
+    "name": {
+      "literal": "btn_lastpage"
     },
     "title": {
       "literal": ">>"
@@ -1135,6 +1213,18 @@
         ],
         "aggregated": []
       }
+    },
+    "contents.sorting": {
+      "literal": [
+        {
+          "partIndex": 0,
+          "partOffsets": [
+            -1,
+            7
+          ],
+          "mode": "setorder"
+        }
+      ]
     },
     "custom.column.widths": {
       "literal": [
@@ -2104,6 +2194,18 @@
             },
             "title": {
               "literal": "Raw Dataset"
+            },
+            "contents.sorting": {
+              "literal": [
+                {
+                  "partIndex": 0,
+                  "partOffsets": [
+                    -1,
+                    7
+                  ],
+                  "mode": "setorder"
+                }
+              ]
             }
           }
         }

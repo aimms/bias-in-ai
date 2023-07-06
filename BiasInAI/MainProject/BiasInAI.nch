@@ -22,3 +22,6 @@
 "sp_imageQueryAnswer" "sp_def_imageQueryAnswer" "2023-07-04 19:51:09"
 "sp_def_imageQueryAnswer" "sp_calc_imageQueryAnswer" "2023-07-04 19:57:49"
 "ep_queryAnswer" "ep_calc_queryAnswer" "2023-07-04 19:58:00"
+"sp_def_tooltip" "sp_def_tooltipQuantityElementsPerPage" "2023-07-06 18:34:25"
+"Copy_pr_previousPage" "pr_firstPage" "2023-07-06 18:40:53"
+"Copy_pr_nextPage" "pr_lastPage" "2023-07-06 18:41:14"
