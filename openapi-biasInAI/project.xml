@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<LibraryProject AimmsVersion="4.96.1.2 unicode x64" ProjectUUID="3A0F5682-82E9-4B82-A249-CC077A352154">
+<LibraryProject AimmsVersion="4.96.6.8 unicode x64" ProjectUUID="F44AD6E6-72F9-46C6-BACD-07E707F8D750">
 	<ModelFileName>openapi-biasInAI.ams</ModelFileName>
 	<Prefix>biasInAI</Prefix>
 	<DisplayName>openapi_biasInAI</DisplayName>

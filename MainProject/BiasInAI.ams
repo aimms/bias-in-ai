@@ -1,6 +1,7 @@
 ## ams_version=1.0
 
 Model Main_BiasInAI {
+	Comment: "See also https://gitlab.aimms.com/joris/aimms-with-python-service/";
 	Section Data_Model {
 		Section Quantities_and_Units {
 			Comment: {
@@ -330,6 +331,9 @@ Model Main_BiasInAI {
 						}
 					}
 				}
+				Parameter p_timeOutSeconds {
+					InitialData: 120;
+				}
 				Set s_askedQueries {
 					Index: i_query;
 					Parameter: ep_query;
@@ -381,6 +385,62 @@ Model Main_BiasInAI {
 		}
 	}
 	Section Leverage_biasInAI_service {
+		Procedure pr_uploadLaunchService {
+			Body: {
+				_sp_appStoragePath := "PublicData/ServiceApp/biasInAI.zip";
+				_sp_localApp := "biasInAIService/biasInAI.zip";
+				if not FileExists( _sp_localApp ) then
+					raise warning formatString("This .aimmspack does not oontain required %s", _sp_localApp);
+				endif ;
+				
+				! if the app does not exist, upload it first
+				_bp_appExists := 0;
+				pro::management::LocalLogInfo("Checking if '" + _sp_appStoragePath + "' exists on PRO storage");
+				pro::storage::ExistsObject(_sp_appStoragePath, _bp_appExists);
+				if _bp_appExists <> 1 then
+					pro::management::LocalLogInfo("'" + _sp_appStoragePath + "' does not exist, uploading '"+_sp_localApp+"'");
+					if not pro::SaveFileToCentralStorage(_sp_localApp, _sp_appStoragePath) then
+						raise warning formatString("pr_uploadLaunchService() failed to upload app: %s", _sp_localApp);
+					endif ;
+				else
+					pro::management::LocalLogInfo("'" + _sp_appStoragePath + "' exists");
+				endif;
+				
+				_p_retCodeLaunchService := pro::service::LaunchService(
+					connectionURI      :  _sp_remoteURL, ! output
+					jsonSpec           :  "biasInAIService/biasInAI.json", 
+					storedApp          :  "pro://" + _sp_appStoragePath);
+				if not _p_retCodeLaunchService then
+					_sp_errorMessage := formatString("pr_uploadLaunchService() failed to launch service from %s", _sp_appStoragePath);
+					! Get error message in DLL
+					_p_retGetLastError := pro::management::GetLastError( _p_proErrorCode, _sp_proErrorDescription);
+					if _p_retGetLastError then
+						_sp_errorMessage += formatString("%i: %s", _p_proErrorCode, _sp_proErrorDescription);
+					else
+						_sp_errorMessage += "reason unknown";
+					endif;
+					raise warning _sp_errorMessage ;
+					pro::management::LocalLogInfo( formatString("pr_uploadLaunchService(): _sp_remoteURL = %s, launch service returned %i", 
+						_sp_remoteURL, _p_retCodeLaunchService));
+				
+				endif ;
+				
+				pro::management::LocalLogInfo( formatString("pr_uploadLaunchService(): _sp_remoteURL = %s, launch service returned %i", 
+					_sp_remoteURL, _p_retCodeLaunchService));
+				
+				! Set the service.
+				biasInAI::api::APIServer := "http://" + _sp_remoteURL;
+			}
+			StringParameter _sp_appStoragePath;
+			StringParameter _sp_localApp;
+			Parameter _bp_appExists;
+			StringParameter _sp_remoteURL;
+			Parameter _p_retCodeLaunchService;
+			Parameter _p_retGetLastError;
+			Parameter _p_proErrorCode;
+			StringParameter _sp_proErrorDescription;
+			StringParameter _sp_errorMessage;
+		}
 		Procedure pr_determineToxic {
 			Body: {
 				SetElementAdd(s_askedQueries, ep_query, card(i_query) + 1);
@@ -391,10 +451,10 @@ Model Main_BiasInAI {
 				
 				pr_callBiasInAI();
 				
-				p_loc_responseRetrieved := dex::client::WaitForResponses(timeout : 30 * 1000 /* milli seconds */);
+				p_loc_responseRetrieved := dex::client::WaitForResponses(timeout :  p_timeOutSeconds * 1000 /* milli seconds */);
 				
 				if not p_loc_responseRetrieved then
-					raise error "no response within 30 seconds" ;
+					raise error formatString("no response within %i seconds", p_timeOutSeconds ) ;
 				endif ;
 			}
 			Parameter p_loc_responseRetrieved;
@@ -435,11 +495,19 @@ Model Main_BiasInAI {
 				biasInAI::api::compute_compute_post::UserResponseHook 
 				:=  'pr_responseHook' ;
 				
+				! Override the timeout
+				!biasInAI::api::RequestTimeout := p_timeOutSeconds * 1000 ;
+				
 				! Start the request.
 				biasInAI::api::compute_compute_post::apiCall(ep_loc_callInstance);
+				
+				!if not dex::client::WaitForResponses(p_timeOutSeconds * 1000) then
+				!	raise error formatString("No response within %i seconds", p_timeOutSeconds);
+				!endif ;
+				!
 			}
 			ElementParameter ep_loc_callInstance {
-				Range: biasInAI::Instances;
+				Range: dex::Instances;
 			}
 			ElementParameter ep_loc_iterToId {
 				IndexDomain: biasInAI::_BiasInAIInput::_comments::i_comments;
@@ -449,6 +517,32 @@ Model Main_BiasInAI {
 		Procedure pr_responseHook {
 			Arguments: (ep_in_callInstance);
 			Body: {
+				!ep_loc_status := biasInAI::api::CallStatusCode(ep_in_callInstance);
+				!
+				!if StringLength( sp_queryToInvestigate ) > 5 then
+				!	sp_log_cmtShort := substring( sp_queryToInvestigate, 1, 5 ) + "..." ;
+				!else
+				!	sp_log_cmtShort := sp_queryToInvestigate ;
+				!endif ;
+				!switch (ep_loc_status) do
+				!	'200': ! Call went ok. 
+				!		bp_calc_commentInvestigatedIsToxic := biasInAI::_BiasInAIOutput::is_toxic( ep_in_callInstance );
+				!		ep_calc_queryAnswer(ep_query) := if bp_calc_commentInvestigatedIsToxic then 'Toxic' else 'Not Toxic' endif;
+				!		sp_calc_imageQueryAnswer := if bp_calc_commentInvestigatedIsToxic then "toxic.png" else "not_toxic.png" endif;
+				!		biasInAI::_BiasInAIInput::EmptyInstance(  ep_in_callInstance );
+				!		biasInAI::_BiasInAIOutput::EmptyInstance( ep_in_callInstance );
+				!
+				!	'422': ! HTTP validation error.
+				!	default:
+				!		raise error formatString("biasInAI::isToxic(%s) failed (instance: \'%e\', status: %e, error: %e): %s",
+				!			sp_log_cmtShort, ep_in_callInstance, 
+				!			biasInAI::api::CallStatusCode(ep_in_callInstance), 
+				!			biasInAI::api::CallErrorCode(ep_in_callInstance),
+				!			"" ! Todo: work on the error elaboration!
+				!			);
+				!
+				!endswitch;
+				!
 				ep_loc_status := biasInAI::api::CallStatusCode(ep_in_callInstance);
 				
 				if StringLength( sp_queryToInvestigate ) > 5 then
@@ -458,7 +552,7 @@ Model Main_BiasInAI {
 				endif ;
 				switch (ep_loc_status) do
 					'200': ! Call went ok. 
-						bp_calc_commentInvestigatedIsToxic := biasInAI::_BiasInAIOutput::is_toxic( ep_in_callInstance );
+						bp_calc_commentInvestigatedIsToxic := biasInAI::_BiasInAIOutput::is_toxic(ep_in_callInstance) ;
 						ep_calc_queryAnswer(ep_query) := if bp_calc_commentInvestigatedIsToxic then 'Toxic' else 'Not Toxic' endif;
 						sp_calc_imageQueryAnswer := if bp_calc_commentInvestigatedIsToxic then "toxic.png" else "not_toxic.png" endif;
 						biasInAI::_BiasInAIInput::EmptyInstance(  ep_in_callInstance );
@@ -466,8 +560,8 @@ Model Main_BiasInAI {
 				
 					'422': ! HTTP validation error.
 					default:
-						raise error formatString("biasInAI::isToxic(%s) failed (instance: \'%e\', status: %e, error: %e): %s",
-							sp_log_cmtShort, ep_in_callInstance, 
+						raise error formatString("biasInAI::isToxic(%s)/%s failed ( status: %e, error: %e): %s",
+							sp_log_cmtShort,  ep_in_callInstance,
 							biasInAI::api::CallStatusCode(ep_in_callInstance), 
 							biasInAI::api::CallErrorCode(ep_in_callInstance),
 							"" ! Todo: work on the error elaboration!
@@ -489,23 +583,10 @@ Model Main_BiasInAI {
 		}
 	}
 	Section Application_initialization_and_termination {
-		Procedure pr_startup {
-			Body: {
-				dex::ReadAllMappings();
-				
-				if pro::GetPROEndPoint() then
-					raise error "Initializing server on the AIMMS Cloud not yet implemented." ;
-					! See however, https://gitlab.aimms.com/joris/aimms-with-python-service/#making-the-python-sources-available-in-aimms-pro-storage
-					! for initializing the server in the AIMMS Cloud.
-				else
-					! Just use the service started by PyCharm on the biasInAI project.
-					biasInAI::api::APIServer :=  "http://localhost:8000" ;
-				endif ;
-				
-				display dex::Mappings ;
-			}
-		}
 		Procedure MainInitialization {
+			Body: {
+				!ProfilerStart();
+			}
 			Comment: "Add initialization statements here that do NOT require any library being initialized already.";
 		}
 		Procedure PostMainInitialization {
@@ -524,7 +605,23 @@ Model Main_BiasInAI {
 				or add statements that require the Data Management module to be initialized."
 			}
 		}
-		Procedure MainExecution;
+		Procedure pr_startup {
+			Body: {
+				dex::ReadAllMappings();
+				
+				if pro::GetPROEndPoint() then
+					! raise error "Initializing server on the AIMMS Cloud not yet implemented." ;
+					! See however, https://gitlab.aimms.com/joris/aimms-with-python-service/#making-the-python-sources-available-in-aimms-pro-storage
+					! for initializing the server in the AIMMS Cloud.
+					pr_uploadLaunchService();
+				else
+					! Just use the service started by PyCharm on the biasInAI project.
+					biasInAI::api::APIServer :=  "http://localhost:8000" ;
+				endif ;
+				
+				display dex::Mappings ;
+			}
+		}
 		Procedure PreMainTermination {
 			Body: {
 				return 1 ; ! We don't work with cases.
@@ -547,5 +644,8 @@ Model Main_BiasInAI {
 				It is recommended to only use the procedure PreMainTermination to cancel the termination sequence and let this procedure always return 1."
 			}
 		}
+	}
+	Section Application_testing_tracing_and_debugging {
+		Procedure MainExecution;
 	}
 }
