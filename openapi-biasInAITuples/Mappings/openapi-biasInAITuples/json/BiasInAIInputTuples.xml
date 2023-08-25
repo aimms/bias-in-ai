@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<AimmsJSONMapping iterative-reset="biasInAITuples::i_childInstance,dex::schema::childNode,dex::schema::extbinding">
+	<ExternalBinding binds-to="biasInAITuples::i_instance" binding="biasInAITuples::CurrentInstance" />
+	<ObjectMapping>
+		<ArrayMapping name="observations" iterative-reset="biasInAITuples::_BiasInAIInputTuples::_observations::i_observations">
+			<ObjectMapping iterative-binds-to="biasInAITuples::_BiasInAIInputTuples::_observations::i_observations">
+				<ValueMapping name="comment" write-defaults="1" maps-to="biasInAITuples::_BiasInAIInputTuples::_observations::comment_(biasInAITuples::i_instance,biasInAITuples::_BiasInAIInputTuples::_observations::i_observations)" />
+				<ValueMapping name="target" write-defaults="1" maps-to="biasInAITuples::_BiasInAIInputTuples::_observations::target(biasInAITuples::i_instance,biasInAITuples::_BiasInAIInputTuples::_observations::i_observations)" number-type="integer" />
+			</ObjectMapping>
+		</ArrayMapping>
+		<ValueMapping name="no_observations" write-defaults="1" maps-to="biasInAITuples::_BiasInAIInputTuples::no_observations(biasInAITuples::i_instance)" number-type="integer" />
+		<ValueMapping name="new_comment" write-defaults="1" maps-to="biasInAITuples::_BiasInAIInputTuples::new_comment(biasInAITuples::i_instance)" />
+	</ObjectMapping>
+</AimmsJSONMapping>

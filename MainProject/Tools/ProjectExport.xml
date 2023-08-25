@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ExportSettings>
+	<ExcludedFile>.idea</ExcludedFile>
+	<ExcludedFile>backup</ExcludedFile>
+	<ExcludedFile>biasInAIService\biasInAI.old.zip</ExcludedFile>
+	<ExcludedFile>log</ExcludedFile>
+	<ExcludedFile>PROTemp</ExcludedFile>
+	<ExcludedFile>PythonSource311</ExcludedFile>
+	<ExcludedFile>requestsResponses</ExcludedFile>
+	<ExcludedFile>venv</ExcludedFile>
+	<ExcludedFile>README.md</ExcludedFile>
+	<ExcludedFile>_Local_Libs_</ExcludedFile>
+</ExportSettings>

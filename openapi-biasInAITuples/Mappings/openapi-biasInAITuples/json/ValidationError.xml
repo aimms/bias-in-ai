@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<AimmsJSONMapping iterative-reset="biasInAITuples::i_childInstance,dex::schema::childNode,dex::schema::extbinding">
+	<ExternalBinding binds-to="biasInAITuples::i_instance" binding="biasInAITuples::CurrentInstance" />
+	<ObjectMapping>
+		<ArrayMapping name="loc" iterative-reset="biasInAITuples::_ValidationError::_loc::i_loc">
+			<ValueMapping iterative-binds-to="biasInAITuples::_ValidationError::_loc::i_loc" maps-to="biasInAITuples::_ValidationError::_loc::loc(biasInAITuples::i_instance,biasInAITuples::_ValidationError::_loc::i_loc)" />
+		</ArrayMapping>
+		<ValueMapping name="msg" write-defaults="1" maps-to="biasInAITuples::_ValidationError::msg(biasInAITuples::i_instance)" />
+		<ValueMapping name="type" write-defaults="1" maps-to="biasInAITuples::_ValidationError::type_(biasInAITuples::i_instance)" />
+	</ObjectMapping>
+</AimmsJSONMapping>

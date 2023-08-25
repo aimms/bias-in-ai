@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<AimmsJSONMapping iterative-reset="biasInAITuples::i_childInstance,dex::schema::childNode,dex::schema::extbinding">
+	<ExternalBinding binds-to="biasInAITuples::i_instance" binding="biasInAITuples::CurrentInstance" />
+	<ObjectMapping>
+		<ValueMapping name="comment" write-defaults="1" maps-to="biasInAITuples::_Observation::comment_(biasInAITuples::i_instance)" />
+		<ValueMapping name="target" write-defaults="1" maps-to="biasInAITuples::_Observation::target(biasInAITuples::i_instance)" number-type="integer" />
+	</ObjectMapping>
+</AimmsJSONMapping>

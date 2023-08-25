@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<LibraryProject AimmsVersion="4.96.8.1 unicode x64" ProjectUUID="A6DA0601-A5E4-40F4-A38A-99306B0568B3">
+	<ModelFileName>openapi-biasInAITuples.ams</ModelFileName>
+	<Prefix>biasInAITuples</Prefix>
+	<DisplayName>openapi_biasInAITuples</DisplayName>
+</LibraryProject>
