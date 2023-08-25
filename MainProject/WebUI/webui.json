@@ -60,6 +60,12 @@
                 "type": "pagev2-grid",
                 "slug": "dashboard",
                 "children": []
+              },
+              {
+                "name": "Scratch",
+                "type": "pagev2-grid",
+                "slug": "scratch",
+                "children": []
               }
             ]
           }
@@ -497,6 +503,46 @@
       ]
     }
   },
+  "pages/scratch": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "tableCommentTarget",
+          "gridArea": "Unassigned widgets",
+          "dndId": "area-atableCommentTarget1"
+        },
+        {
+          "widgetUri": "tableCommentToxic",
+          "gridArea": "area-a",
+          "dndId": "area-atableCommentToxic0"
+        }
+      ]
+    },
+    "layoutId": {
+      "literal": "Layout9"
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "tableCommentToxic",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "tableCommentTarget",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    }
+  },
   "widgets/btn_backwards": {
     "action": {
       "literal": {
@@ -687,6 +733,70 @@
     },
     "views": {
       "literal": {}
+    }
+  },
+  "widgets/tableCommentTarget": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "name": {
+      "literal": "tableCommentTarget"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/tableCommentToxic": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "bp_target",
+          "sp_commentText"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "i_id"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "bp_target"
+          },
+          "width": 16.07
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "sp_commentText"
+          },
+          "width": 236.3
+        }
+      ]
+    },
+    "name": {
+      "literal": "tableCommentToxic"
+    },
+    "views": {
+      "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0"
+      ]
     }
   },
   "widgets/tbl_dataset": {

@@ -21,6 +21,7 @@ Model Main_BiasInAI {
 			}
 		}
 		Set s_ids {
+			SubsetOf: Integers;
 			Index: i_id;
 			Parameter: ep_id;
 		}
@@ -29,6 +30,7 @@ Model Main_BiasInAI {
 		}
 		Parameter bp_target {
 			IndexDomain: i_id;
+			Range: binary;
 			Definition: 1 $ ( p_target(i_id) > 0.7 );
 		}
 		StringParameter sp_commentText {
@@ -229,6 +231,91 @@ Model Main_BiasInAI {
 						        break;
 						    endfor;
 						endfor;
+						
+						p_calc_idPerPage2(i_id, i_page)
+							| ( ( val(i_page)-1 ) * p_quantityElementsPerPage < ord(i_id) ) and
+							  ( ord(i_id) <= val(i_page) * p_quantityElementsPerPage ) 
+						
+							:= 1;
+						
+						ep_calc_idPerPage3First(i_page) := Element( s_ids, (ord(i_page)-1)*p_quantityElementsPerPage + 1 );
+						ep_calc_idPerPage3Last( i_page) := Element( s_ids, ord(i_page)*p_quantityElementsPerPage );
+						ep_lastPage := last(s_def_pages);
+						if not ep_calc_idPerPage3Last( ep_lastPage) then
+							ep_calc_idPerPage3Last( ep_lastPage) := last( s_ids );
+						endif ;
+						p_calc_idPerPage3Perm(( i_page, i_id ) | ep_calc_idPerPage3First( i_page ) <= i_id and i_id <= ep_calc_idPerPage3Last( i_page ) ) := 1 ; 
+						p_calc_idPerPage3(i_id, i_page) := p_calc_idPerPage3Perm(i_page, i_id);
+						
+						empty p_calc_idPerPage4Perm, p_calc_idPerPage4 ;
+						for i_page do
+							s_pageIds := SubRange(
+								Superset :  s_ids, 
+								First    :  ep_calc_idPerPage3First(i_page), 
+								Last     :  ep_calc_idPerPage3Last( i_page));
+							p_calc_idPerPage4Perm(i_page, i_pid ) := 1;
+							p_calc_idPerPage4(i_pid, i_page) := 1 ;
+						endfor ;
+						!p_calc_idPerPage4(i_id, i_page) := p_calc_idPerPage4Perm(i_page, i_id);
+						
+						p_calc_idPerPageDiff2(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage2(i_id, i_page) );
+						p_calc_idPerPageDiff3(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage3(i_id, i_page) );
+						p_calc_idPerPageDiff4(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage4(i_id, i_page) );
+						
+						
+						display p_calc_idPerPageDiff2 ;
+						display p_calc_idPerPageDiff3 ;
+						display p_calc_idPerPageDiff4 ;
+						!display { p_calc_idPerPage, p_calc_idPerPage2, p_calc_idPerPage3, p_calc_idPerPage4 } ;
+					}
+					Comment: {
+						"webui::SetProgressMessage(\"Calculating elements per page...\");
+						
+						empty p_calc_idPerPage;
+						
+						for i_id do
+						    for (i_page) | ord(i_id) <= val(i_page) * p_quantityElementsPerPage do
+						
+						        p_calc_idPerPage(i_id, i_page) := 1;
+						        break;
+						    endfor;
+						endfor;
+						
+						p_calc_idPerPage2(i_id, i_page)
+							| ( ( val(i_page)-1 ) * p_quantityElementsPerPage < ord(i_id) ) and
+							  ( ord(i_id) <= val(i_page) * p_quantityElementsPerPage ) 
+						
+							:= 1;
+						
+						ep_calc_idPerPage3First(i_page) := Element( s_ids, (ord(i_page)-1)*p_quantityElementsPerPage + 1 );
+						ep_calc_idPerPage3Last( i_page) := Element( s_ids, ord(i_page)*p_quantityElementsPerPage );
+						ep_lastPage := last(s_def_pages);
+						if not ep_calc_idPerPage3Last( ep_lastPage) then
+							ep_calc_idPerPage3Last( ep_lastPage) := last( s_ids );
+						endif ;
+						p_calc_idPerPage3Perm(( i_page, i_id ) | ep_calc_idPerPage3First( i_page ) <= i_id and i_id <= ep_calc_idPerPage3Last( i_page ) ) := 1 ; 
+						p_calc_idPerPage3(i_id, i_page) := p_calc_idPerPage3Perm(i_page, i_id);
+						
+						empty p_calc_idPerPage4Perm, p_calc_idPerPage4 ;
+						for i_page do
+							s_pageIds := SubRange(
+								Superset :  s_ids, 
+								First    :  ep_calc_idPerPage3First(i_page), 
+								Last     :  ep_calc_idPerPage3Last( i_page));
+							p_calc_idPerPage4Perm(i_page, i_pid ) := 1;
+							p_calc_idPerPage4(i_pid, i_page) := 1 ;
+						endfor ;
+						!p_calc_idPerPage4(i_id, i_page) := p_calc_idPerPage4Perm(i_page, i_id);
+						
+						p_calc_idPerPageDiff2(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage2(i_id, i_page) );
+						p_calc_idPerPageDiff3(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage3(i_id, i_page) );
+						p_calc_idPerPageDiff4(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage4(i_id, i_page) );
+						
+						
+						display p_calc_idPerPageDiff2 ;
+						display p_calc_idPerPageDiff3 ;
+						display p_calc_idPerPageDiff4 ;
+						!display { p_calc_idPerPage, p_calc_idPerPage2, p_calc_idPerPage3, p_calc_idPerPage4 } ;"
 					}
 				}
 				Procedure pr_previousPage {
@@ -296,6 +383,53 @@ Model Main_BiasInAI {
 					Definition: "By changing this value, the quantity of elements per page will change.";
 				}
 				Parameter p_calc_idPerPage {
+					IndexDomain: (i_id,i_page);
+					Range: binary;
+				}
+				Parameter p_calc_idPerPage2 {
+					IndexDomain: (i_id,i_page);
+					Range: binary;
+				}
+				Parameter p_calc_idPerPage3 {
+					IndexDomain: (i_id,i_page);
+					Range: binary;
+				}
+				Parameter p_calc_idPerPage4 {
+					IndexDomain: (i_id,i_page);
+					Range: binary;
+				}
+				Parameter p_calc_idPerPage3Perm {
+					IndexDomain: (i_page,i_id);
+					Range: binary;
+				}
+				Parameter p_calc_idPerPage4Perm {
+					IndexDomain: (i_page,i_id);
+					Range: binary;
+				}
+				Set s_pageIds {
+					SubsetOf: s_ids;
+					Index: i_pid;
+				}
+				ElementParameter ep_calc_idPerPage3First {
+					IndexDomain: i_page;
+					Range: s_ids;
+				}
+				ElementParameter ep_calc_idPerPage3Last {
+					IndexDomain: i_page;
+					Range: s_ids;
+				}
+				Parameter p_calc_idPerPageDiff2 {
+					IndexDomain: (i_id,i_page);
+					Range: binary;
+				}
+				ElementParameter ep_lastPage {
+					Range: s_def_pages;
+				}
+				Parameter p_calc_idPerPageDiff3 {
+					IndexDomain: (i_id,i_page);
+					Range: binary;
+				}
+				Parameter p_calc_idPerPageDiff4 {
 					IndexDomain: (i_id,i_page);
 					Range: binary;
 				}
@@ -395,23 +529,26 @@ Model Main_BiasInAI {
 				
 				! if the app does not exist, upload it first
 				_bp_appExists := 0;
-				pro::management::LocalLogInfo("Checking if '" + _sp_appStoragePath + "' exists on PRO storage");
 				pro::storage::ExistsObject(_sp_appStoragePath, _bp_appExists);
-				if _bp_appExists <> 1 then
-					pro::management::LocalLogInfo("'" + _sp_appStoragePath + "' does not exist, uploading '"+_sp_localApp+"'");
-					if not pro::SaveFileToCentralStorage(_sp_localApp, _sp_appStoragePath) then
-						raise warning formatString("pr_uploadLaunchService() failed to upload app: %s", _sp_localApp);
-					endif ;
-				else
-					pro::management::LocalLogInfo("'" + _sp_appStoragePath + "' exists");
-				endif;
+				pro::management::LocalLogInfo("pr_uploadLaunchService(): The object '" + _sp_appStoragePath + if _bp_appExists = 1 then " does exist" else " does not exist" endif );
+				
+				if _bp_appExists = 1 then
+					! Clean up previous version.
+					pro::management::LocalLogInfo("pr_uploadLaunchService(): Removing old version of: '" + _sp_appStoragePath );
+					pro::DeleteStorageFile(storagePath : _sp_appStoragePath );
+				endif ;
+				pro::management::LocalLogInfo("pr_uploadLaunchService(): Copying new version of: '" + _sp_appStoragePath );
+				if not pro::SaveFileToCentralStorage(_sp_localApp, _sp_appStoragePath) then
+					raise warning formatString("pr_uploadLaunchService() failed to upload app: %s", _sp_localApp);
+				endif ;
+				
 				
 				_p_retCodeLaunchService := pro::service::LaunchService(
 					connectionURI      :  _sp_remoteURL, ! output
 					jsonSpec           :  "biasInAIService/biasInAI.json", 
 					storedApp          :  "pro://" + _sp_appStoragePath);
 				if not _p_retCodeLaunchService then
-					_sp_errorMessage := formatString("pr_uploadLaunchService() failed to launch service from %s", _sp_appStoragePath);
+					_sp_errorMessage := formatString("pr_uploadLaunchService(): failed to launch service from %s", _sp_appStoragePath);
 					! Get error message in DLL
 					_p_retGetLastError := pro::management::GetLastError( _p_proErrorCode, _sp_proErrorDescription);
 					if _p_retGetLastError then
@@ -429,7 +566,7 @@ Model Main_BiasInAI {
 					_sp_remoteURL, _p_retCodeLaunchService));
 				
 				! Set the service.
-				biasInAI::api::APIServer := "http://" + _sp_remoteURL;
+				biasInAITuples::api::APIServer := "http://" + _sp_remoteURL;
 			}
 			StringParameter _sp_appStoragePath;
 			StringParameter _sp_localApp;
@@ -449,7 +586,8 @@ Model Main_BiasInAI {
 				
 				webui::SetProgressMessage("Investigating query...");
 				
-				pr_callBiasInAI();
+				!pr_callBiasInAI();
+				pr_callBiasInAITuples();
 				
 				p_loc_responseRetrieved := dex::client::WaitForResponses(timeout :  p_timeOutSeconds * 1000 /* milli seconds */);
 				
@@ -459,62 +597,75 @@ Model Main_BiasInAI {
 			}
 			Parameter p_loc_responseRetrieved;
 		}
-		Procedure pr_callBiasInAI {
+		Procedure pr_callBiasInAITuples {
 			Body: {
+				! biasInAITuples::api::RequestResponseFilePrefix:= "requestsResponses/" ;
+				
 				! Starting current call.
-				biasInAI::api::NewCallInstance(ep_loc_callInstance);
+				biasInAITuples::api::NewCallInstance(ep_loc_callInstance);
+				
+				!DebuggerBreakpoint();
 				
 				block ! Fill in the data for making the request.
 				
 					! Pass the data from the data model to the corresponding data in the biasInAI library.
-					biasInAI::_BiasInAIInput::no_observations(ep_loc_callInstance) := p_def_cardID ;
-					biasInAI::_BiasInAIInput::new_comment(ep_loc_callInstance) := sp_queryToInvestigate ;
-					biasInAI::_BiasInAIInput::_comments::comments_iter := ElementRange( 1, p_def_cardID );
-					biasInAI::_BiasInAIInput::_target::target_iter := ElementRange( 1, p_def_cardID );
+					biasInAITuples::_BiasInAIInputTuples::no_observations(ep_loc_callInstance) := p_def_cardID ;
+					biasInAITuples::_BiasInAIInputTuples::new_comment(ep_loc_callInstance) := sp_queryToInvestigate ;
+					biasInAITuples::_BiasInAIInputTuples::_observations::observations_iter := ElementRange( 1, p_def_cardID );
 				
-					ep_loc_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) 
-					:=  element( s_ids, val( biasInAI::_BiasInAIInput::_comments::i_comments ) );
+					ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) 
+					:=  element( s_ids, val( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) );
 				
-					biasInAI::_BiasInAIInput::_comments::Items(ep_loc_callInstance, biasInAI::_BiasInAIInput::_comments::i_comments) 
-					:= 	sp_commentText( ep_loc_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) ) ;
+					for biasInAITuples::_BiasInAIInputTuples::_observations::i_observations do
+						_ep_cmtNo := biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ;
+						_ep_id := ep_loc_iterToId( _ep_cmtNo ) ;
+						biasInAITuples::_BiasInAIInputTuples::_observations::comment_(ep_loc_callInstance, _ep_cmtNo) := sp_commentText( _ep_id ) ;
+					endfor ;
 				
-					biasInAI::_BiasInAIInput::_target::Items(ep_loc_callInstance, biasInAI::_BiasInAIInput::_comments::i_comments) 
-					:=  bp_target( ep_loc_iterToId( biasInAI::_BiasInAIInput::_comments::i_comments ) ) ;
+					biasInAITuples::_BiasInAIInputTuples::_observations::target(ep_loc_callInstance, biasInAITuples::_BiasInAIInputTuples::_observations::i_observations) 
+					:=  bp_target( ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) ) ;
 				
 					block ! Check if we passed the data corectly.
-						if card( biasInAI::_BiasInAIInput::_comments::Items ) <> p_def_cardID then
+						_p_commentsCard := card( biasInAITuples::_BiasInAIInputTuples::_observations::comment_ );
+						if _p_commentsCard <> p_def_cardID then
+							display _p_commentsCard, p_def_cardID ;
 							raise error "internal error passing data \'comments\'" ;
 						endif ;
-						if card( biasInAI::_BiasInAIInput::_target::Items ) <> p_def_cardID then
-							raise error "internal error passing data \'target\'" ;
-						endif ;
+				!		if card( biasInAITuples::_BiasInAIInputTuples::_observations::target ) <> p_def_cardID then
+				!			raise error "internal error passing data \'target\'" ;
+				!		endif ;
 					endblock ;
 				endblock ;
 				
 				! Install hook, which will copy the data or handle the error
-				biasInAI::api::compute_compute_post::UserResponseHook 
-				:=  'pr_responseHook' ;
+				biasInAITuples::api::compute_compute_post::UserResponseHook 
+				:=  'pr_responseHookTuples' ;
 				
-				! Override the timeout
-				!biasInAI::api::RequestTimeout := p_timeOutSeconds * 1000 ;
 				
 				! Start the request.
-				biasInAI::api::compute_compute_post::apiCall(ep_loc_callInstance);
+				biasInAITuples::api::compute_compute_post::apiCall(ep_loc_callInstance);
 				
 				!if not dex::client::WaitForResponses(p_timeOutSeconds * 1000) then
 				!	raise error formatString("No response within %i seconds", p_timeOutSeconds);
 				!endif ;
 				!
 			}
+			ElementParameter _ep_id {
+				Range: s_ids;
+			}
+			ElementParameter _ep_cmtNo {
+				Range: biasInAITuples::_BiasInAIInputTuples::_observations::observations_iter;
+			}
+			Parameter _p_commentsCard;
 			ElementParameter ep_loc_callInstance {
 				Range: dex::Instances;
 			}
 			ElementParameter ep_loc_iterToId {
-				IndexDomain: biasInAI::_BiasInAIInput::_comments::i_comments;
+				IndexDomain: biasInAITuples::_BiasInAIInputTuples::_observations::i_observations;
 				Range: s_ids;
 			}
 		}
-		Procedure pr_responseHook {
+		Procedure pr_responseHookTuples {
 			Arguments: (ep_in_callInstance);
 			Body: {
 				!ep_loc_status := biasInAI::api::CallStatusCode(ep_in_callInstance);
@@ -543,7 +694,7 @@ Model Main_BiasInAI {
 				!
 				!endswitch;
 				!
-				ep_loc_status := biasInAI::api::CallStatusCode(ep_in_callInstance);
+				ep_loc_status := biasInAITuples::api::CallStatusCode(ep_in_callInstance);
 				
 				if StringLength( sp_queryToInvestigate ) > 5 then
 					sp_log_cmtShort := substring( sp_queryToInvestigate, 1, 5 ) + "..." ;
@@ -552,18 +703,21 @@ Model Main_BiasInAI {
 				endif ;
 				switch (ep_loc_status) do
 					'200': ! Call went ok. 
-						bp_calc_commentInvestigatedIsToxic := biasInAI::_BiasInAIOutput::is_toxic(ep_in_callInstance) ;
+						bp_calc_commentInvestigatedIsToxic := biasInAITuples::_BiasInAIOutput::is_toxic(ep_in_callInstance) ;
 						ep_calc_queryAnswer(ep_query) := if bp_calc_commentInvestigatedIsToxic then 'Toxic' else 'Not Toxic' endif;
 						sp_calc_imageQueryAnswer := if bp_calc_commentInvestigatedIsToxic then "toxic.png" else "not_toxic.png" endif;
-						biasInAI::_BiasInAIInput::EmptyInstance(  ep_in_callInstance );
-						biasInAI::_BiasInAIOutput::EmptyInstance( ep_in_callInstance );
+						biasInAITuples::_BiasInAIInputTuples::EmptyInstance(  ep_in_callInstance );
+						biasInAITuples::_BiasInAIOutput::EmptyInstance( ep_in_callInstance );
 				
 					'422': ! HTTP validation error.
 					default:
-						raise error formatString("biasInAI::isToxic(%s)/%s failed ( status: %e, error: %e): %s",
+						display { biasInAITuples::_HTTPValidationError::_detail::msg, 
+							biasInAITuples::_HTTPValidationError::_detail::type_ }, 
+							biasInAITuples::_HTTPValidationError::_detail::_loc::loc ;
+						raise error formatString("biasInAITuples::isToxic(%s)/%s failed ( status: %e, error: %e): %s",
 							sp_log_cmtShort,  ep_in_callInstance,
-							biasInAI::api::CallStatusCode(ep_in_callInstance), 
-							biasInAI::api::CallErrorCode(ep_in_callInstance),
+							biasInAITuples::api::CallStatusCode(ep_in_callInstance), 
+							biasInAITuples::api::CallErrorCode(ep_in_callInstance),
 							"" ! Todo: work on the error elaboration!
 							);
 				
@@ -585,7 +739,7 @@ Model Main_BiasInAI {
 	Section Application_initialization_and_termination {
 		Procedure MainInitialization {
 			Body: {
-				!ProfilerStart();
+				ProfilerStart();
 			}
 			Comment: "Add initialization statements here that do NOT require any library being initialized already.";
 		}
@@ -609,17 +763,23 @@ Model Main_BiasInAI {
 			Body: {
 				dex::ReadAllMappings();
 				
-				if pro::GetPROEndPoint() then
-					! raise error "Initializing server on the AIMMS Cloud not yet implemented." ;
-					! See however, https://gitlab.aimms.com/joris/aimms-with-python-service/#making-the-python-sources-available-in-aimms-pro-storage
-					! for initializing the server in the AIMMS Cloud.
-					pr_uploadLaunchService();
-				else
-					! Just use the service started by PyCharm on the biasInAI project.
-					biasInAI::api::APIServer :=  "http://localhost:8000" ;
-				endif ;
+				! Do not launch the Python service for verify sessions and for solver sessions.
+				if        ( pro::proSessionType = ''      ) ! Running in AIMMS Developer
+				       or ( pro::proSessionType = 'webui' ) ! Running deployed on AIMMS Cloud.
+				then
 				
-				display dex::Mappings ;
+					if pro::GetPROEndPoint() then
+						! See however, https://gitlab.aimms.com/joris/aimms-with-python-service/#making-the-python-sources-available-in-aimms-pro-storage
+						! for initializing the server in the AIMMS Cloud.
+						pr_uploadLaunchService();
+					else
+						! Just use the service started by PyCharm on the biasInAI project.
+						biasInAITuples::api::APIServer :=  "http://localhost:8000" ;
+					endif ;
+				
+					! display dex::Mappings ;
+				
+				endif ;
 			}
 		}
 		Procedure PreMainTermination {
