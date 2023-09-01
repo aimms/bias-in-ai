@@ -1,4 +1,5 @@
 ﻿* AIMMS
+communicate_warnings_to_end_users 1
 rounding_compatibility Aimms_3_7
 use_UTC_forCaseAndStartEndDate 1
 * BARON 21

@@ -220,102 +220,23 @@ Model Main_BiasInAI {
 			Section Inputs {
 				Procedure pr_changeQuantityElementsPerPage {
 					Body: {
-						webui::SetProgressMessage("Calculating elements per page...");
+						!webui::SetProgressMessage("Calculating elements per page...");
+						
+						ep_calc_idPerPageFirst(i_page) := Element( s_ids, (ord(i_page)-1)*p_quantityElementsPerPage + 1 );
+						ep_calc_idPerPageLast( i_page) := Element( s_ids, ord(i_page)*p_quantityElementsPerPage );
+						ep_lastPage := last(s_def_pages);
+						if not ep_calc_idPerPageLast( ep_lastPage) then
+							ep_calc_idPerPageLast( ep_lastPage) := last( s_ids );
+						endif ;
 						
 						empty p_calc_idPerPage;
-						
-						for i_id do
-						    for (i_page) | ord(i_id) <= val(i_page) * p_quantityElementsPerPage do
-						
-						        p_calc_idPerPage(i_id, i_page) := 1;
-						        break;
-						    endfor;
-						endfor;
-						
-						p_calc_idPerPage2(i_id, i_page)
-							| ( ( val(i_page)-1 ) * p_quantityElementsPerPage < ord(i_id) ) and
-							  ( ord(i_id) <= val(i_page) * p_quantityElementsPerPage ) 
-						
-							:= 1;
-						
-						ep_calc_idPerPage3First(i_page) := Element( s_ids, (ord(i_page)-1)*p_quantityElementsPerPage + 1 );
-						ep_calc_idPerPage3Last( i_page) := Element( s_ids, ord(i_page)*p_quantityElementsPerPage );
-						ep_lastPage := last(s_def_pages);
-						if not ep_calc_idPerPage3Last( ep_lastPage) then
-							ep_calc_idPerPage3Last( ep_lastPage) := last( s_ids );
-						endif ;
-						p_calc_idPerPage3Perm(( i_page, i_id ) | ep_calc_idPerPage3First( i_page ) <= i_id and i_id <= ep_calc_idPerPage3Last( i_page ) ) := 1 ; 
-						p_calc_idPerPage3(i_id, i_page) := p_calc_idPerPage3Perm(i_page, i_id);
-						
-						empty p_calc_idPerPage4Perm, p_calc_idPerPage4 ;
 						for i_page do
 							s_pageIds := SubRange(
 								Superset :  s_ids, 
-								First    :  ep_calc_idPerPage3First(i_page), 
-								Last     :  ep_calc_idPerPage3Last( i_page));
-							p_calc_idPerPage4Perm(i_page, i_pid ) := 1;
-							p_calc_idPerPage4(i_pid, i_page) := 1 ;
+								First    :  ep_calc_idPerPageFirst(i_page), 
+								Last     :  ep_calc_idPerPageLast( i_page));
+							p_calc_idPerPage(i_page, i_pid ) := 1;
 						endfor ;
-						!p_calc_idPerPage4(i_id, i_page) := p_calc_idPerPage4Perm(i_page, i_id);
-						
-						p_calc_idPerPageDiff2(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage2(i_id, i_page) );
-						p_calc_idPerPageDiff3(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage3(i_id, i_page) );
-						p_calc_idPerPageDiff4(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage4(i_id, i_page) );
-						
-						
-						display p_calc_idPerPageDiff2 ;
-						display p_calc_idPerPageDiff3 ;
-						display p_calc_idPerPageDiff4 ;
-						!display { p_calc_idPerPage, p_calc_idPerPage2, p_calc_idPerPage3, p_calc_idPerPage4 } ;
-					}
-					Comment: {
-						"webui::SetProgressMessage(\"Calculating elements per page...\");
-						
-						empty p_calc_idPerPage;
-						
-						for i_id do
-						    for (i_page) | ord(i_id) <= val(i_page) * p_quantityElementsPerPage do
-						
-						        p_calc_idPerPage(i_id, i_page) := 1;
-						        break;
-						    endfor;
-						endfor;
-						
-						p_calc_idPerPage2(i_id, i_page)
-							| ( ( val(i_page)-1 ) * p_quantityElementsPerPage < ord(i_id) ) and
-							  ( ord(i_id) <= val(i_page) * p_quantityElementsPerPage ) 
-						
-							:= 1;
-						
-						ep_calc_idPerPage3First(i_page) := Element( s_ids, (ord(i_page)-1)*p_quantityElementsPerPage + 1 );
-						ep_calc_idPerPage3Last( i_page) := Element( s_ids, ord(i_page)*p_quantityElementsPerPage );
-						ep_lastPage := last(s_def_pages);
-						if not ep_calc_idPerPage3Last( ep_lastPage) then
-							ep_calc_idPerPage3Last( ep_lastPage) := last( s_ids );
-						endif ;
-						p_calc_idPerPage3Perm(( i_page, i_id ) | ep_calc_idPerPage3First( i_page ) <= i_id and i_id <= ep_calc_idPerPage3Last( i_page ) ) := 1 ; 
-						p_calc_idPerPage3(i_id, i_page) := p_calc_idPerPage3Perm(i_page, i_id);
-						
-						empty p_calc_idPerPage4Perm, p_calc_idPerPage4 ;
-						for i_page do
-							s_pageIds := SubRange(
-								Superset :  s_ids, 
-								First    :  ep_calc_idPerPage3First(i_page), 
-								Last     :  ep_calc_idPerPage3Last( i_page));
-							p_calc_idPerPage4Perm(i_page, i_pid ) := 1;
-							p_calc_idPerPage4(i_pid, i_page) := 1 ;
-						endfor ;
-						!p_calc_idPerPage4(i_id, i_page) := p_calc_idPerPage4Perm(i_page, i_id);
-						
-						p_calc_idPerPageDiff2(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage2(i_id, i_page) );
-						p_calc_idPerPageDiff3(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage3(i_id, i_page) );
-						p_calc_idPerPageDiff4(i_id, i_page) := abs( p_calc_idPerPage(i_id, i_page) - p_calc_idPerPage4(i_id, i_page) );
-						
-						
-						display p_calc_idPerPageDiff2 ;
-						display p_calc_idPerPageDiff3 ;
-						display p_calc_idPerPageDiff4 ;
-						!display { p_calc_idPerPage, p_calc_idPerPage2, p_calc_idPerPage3, p_calc_idPerPage4 } ;"
 					}
 				}
 				Procedure pr_previousPage {
@@ -360,7 +281,7 @@ Model Main_BiasInAI {
 					SubsetOf: s_ids;
 					Index: i_pg_id;
 					Definition: {
-						{i_id | p_calc_idPerPage(i_id, ep_currentPage)}
+						{i_id | p_calc_idPerPage(ep_currentPage, i_id)}
 					}
 				}
 				Parameter p_def_numberOfPages {
@@ -383,26 +304,6 @@ Model Main_BiasInAI {
 					Definition: "By changing this value, the quantity of elements per page will change.";
 				}
 				Parameter p_calc_idPerPage {
-					IndexDomain: (i_id,i_page);
-					Range: binary;
-				}
-				Parameter p_calc_idPerPage2 {
-					IndexDomain: (i_id,i_page);
-					Range: binary;
-				}
-				Parameter p_calc_idPerPage3 {
-					IndexDomain: (i_id,i_page);
-					Range: binary;
-				}
-				Parameter p_calc_idPerPage4 {
-					IndexDomain: (i_id,i_page);
-					Range: binary;
-				}
-				Parameter p_calc_idPerPage3Perm {
-					IndexDomain: (i_page,i_id);
-					Range: binary;
-				}
-				Parameter p_calc_idPerPage4Perm {
 					IndexDomain: (i_page,i_id);
 					Range: binary;
 				}
@@ -410,28 +311,16 @@ Model Main_BiasInAI {
 					SubsetOf: s_ids;
 					Index: i_pid;
 				}
-				ElementParameter ep_calc_idPerPage3First {
+				ElementParameter ep_calc_idPerPageFirst {
 					IndexDomain: i_page;
 					Range: s_ids;
 				}
-				ElementParameter ep_calc_idPerPage3Last {
+				ElementParameter ep_calc_idPerPageLast {
 					IndexDomain: i_page;
 					Range: s_ids;
-				}
-				Parameter p_calc_idPerPageDiff2 {
-					IndexDomain: (i_id,i_page);
-					Range: binary;
 				}
 				ElementParameter ep_lastPage {
 					Range: s_def_pages;
-				}
-				Parameter p_calc_idPerPageDiff3 {
-					IndexDomain: (i_id,i_page);
-					Range: binary;
-				}
-				Parameter p_calc_idPerPageDiff4 {
-					IndexDomain: (i_id,i_page);
-					Range: binary;
 				}
 				StringParameter sp_def_inputPageSecondaryActions {
 					IndexDomain: (webui::indexPageExtension,webui::indexPageActionSpec);
@@ -599,12 +488,11 @@ Model Main_BiasInAI {
 		}
 		Procedure pr_callBiasInAITuples {
 			Body: {
+				! By not setting the RequestResponseFilePrefix, we will be using memory streams!
 				! biasInAITuples::api::RequestResponseFilePrefix:= "requestsResponses/" ;
 				
-				! Starting current call.
+				! As the OpenAPI library is Asynchronous, RestAPI calls need to be identified in the client.
 				biasInAITuples::api::NewCallInstance(ep_loc_callInstance);
-				
-				!DebuggerBreakpoint();
 				
 				block ! Fill in the data for making the request.
 				
@@ -616,24 +504,30 @@ Model Main_BiasInAI {
 					ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) 
 					:=  element( s_ids, val( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) );
 				
-					for biasInAITuples::_BiasInAIInputTuples::_observations::i_observations do
-						_ep_cmtNo := biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ;
-						_ep_id := ep_loc_iterToId( _ep_cmtNo ) ;
-						biasInAITuples::_BiasInAIInputTuples::_observations::comment_(ep_loc_callInstance, _ep_cmtNo) := sp_commentText( _ep_id ) ;
-					endfor ;
+				!	for biasInAITuples::_BiasInAIInputTuples::_observations::i_observations do
+				!		_ep_cmtNo := biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ;
+				!		_ep_id := ep_loc_iterToId( _ep_cmtNo ) ;
+				!		biasInAITuples::_BiasInAIInputTuples::_observations::comment_(ep_loc_callInstance, _ep_cmtNo) := sp_commentText( _ep_id ) ;
+				!	endfor ;
+				
+					biasInAITuples::_BiasInAIInputTuples::_observations::comment_( ep_loc_callInstance, biasInAITuples::_BiasInAIInputTuples::_observations::i_observations) 
+					:= sp_commentText( ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) );
 				
 					biasInAITuples::_BiasInAIInputTuples::_observations::target(ep_loc_callInstance, biasInAITuples::_BiasInAIInputTuples::_observations::i_observations) 
 					:=  bp_target( ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) ) ;
 				
-					block ! Check if we passed the data corectly.
+					block ! Check if we passed the data correctly.
 						_p_commentsCard := card( biasInAITuples::_BiasInAIInputTuples::_observations::comment_ );
 						if _p_commentsCard <> p_def_cardID then
-							display _p_commentsCard, p_def_cardID ;
+							! display _p_commentsCard, p_def_cardID ;
 							raise error "internal error passing data \'comments\'" ;
 						endif ;
+				
+				! Test commented out, as this array will contain many zeros/defaults and card is therefor not a good test for length.
 				!		if card( biasInAITuples::_BiasInAIInputTuples::_observations::target ) <> p_def_cardID then
 				!			raise error "internal error passing data \'target\'" ;
 				!		endif ;
+				
 					endblock ;
 				endblock ;
 				
@@ -644,11 +538,6 @@ Model Main_BiasInAI {
 				
 				! Start the request.
 				biasInAITuples::api::compute_compute_post::apiCall(ep_loc_callInstance);
-				
-				!if not dex::client::WaitForResponses(p_timeOutSeconds * 1000) then
-				!	raise error formatString("No response within %i seconds", p_timeOutSeconds);
-				!endif ;
-				!
 			}
 			ElementParameter _ep_id {
 				Range: s_ids;
@@ -723,7 +612,10 @@ Model Main_BiasInAI {
 				
 				endswitch;
 			}
-			Comment: "Prototype that any request or response user hook procedure must adhere to";
+			Comment: {
+				"Client specific code for handling the response from the server, here
+				whether the comment at hand is toxic or not."
+			}
 			DeclarationSection Locals {
 				ElementParameter ep_in_callInstance {
 					Range: dex::Instances;
@@ -746,13 +638,13 @@ Model Main_BiasInAI {
 		Procedure PostMainInitialization {
 			Body: {
 				webui::SetProgressMessage("Initializing dataset...");
+				p_quantityElementsPerPage := 450;
 				pr_importDataset;
 				
-				webui::SetProgressMessage("Initializing inputs page...");
+				webui::SetProgressMessage("");
 				ep_currentpage := first(i_page);
-				p_quantityElementsPerPage := 450;
 				
-				pr_changeQuantityElementsPerPage;
+				!pr_changeQuantityElementsPerPage;
 			}
 			Comment: {
 				"Add initialization statements here that require that the libraries are already initialized properly,

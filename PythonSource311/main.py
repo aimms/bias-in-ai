@@ -12,10 +12,9 @@ import json
 import numpy as np
 import pandas as pd
 
-# for using Python 3.11 - changed sklearn to scikit-learn
+
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
-
 from sklearn.linear_model import LogisticRegression
 
 
@@ -75,46 +74,20 @@ def classify_string(string, investigate=False):
 
 
 # Function to classify any string
-def classify_this_string(string, classifier, vectorizer,investigate=False):
+def classify_this_string(string, classifier, vectorizer, investigate=False):
     prediction = classifier.predict(vectorizer.transform([string]))[0]
 
     return prediction
 
-
-# Global statements, not needed for the service.
-# comments, target = read_data_csv()
-# print("Data successfully loaded!\n")
-# 
-# # Get the training and test data as globals.
-# vectorizer, X_train, X_test, y_train, y_test = train_on_data(comments, target)
-# 
-# 
-# # Train a model and evaluate performance on test dataset
-# classifier = LogisticRegression(max_iter=2000)
-# classifier.fit(X_train, y_train)
-# score = classifier.score(X_test, y_test)
-# print("Accuracy:", score)
-# 
-# # Test classify_string function.
-# my_comment = "black is black, I want my baby back"
-# 
-# # Do not change the code below
-# classify_string(my_comment)
-
-# The input class for the Bias_in_AI app:
-class BiasInAIInputArrays(BaseModel):
-    no_observations: int
-    comments: list[str] # length is no_observations
-    target: list[int] # Toxic (1) or not (0).
-    new_comment: str # determine for this string, whether it is toxic or not.
-    
+# First define the structure of observations.
+# Usually an observation has many attributes, but we use only these two here.
 class Observation(BaseModel):
-    comment: str
-    target: int
+    comment: str  # An observed text
+    target: int  # A verified zero / one whether this text is considered toxic.
 
-# The input class for the Bias_in_AI app:
+# The input class for the Bias_in_AI app is essentially a row of observations, and a value to predict.
 class BiasInAIInputTuples(BaseModel):
-    no_observations: int
+    no_observations: int             # not really needed, but used for an internal check.
     observations: list[Observation]  # length is no_observations
     new_comment: str                 # determine for this string, whether it is toxic or not.
 
@@ -126,39 +99,30 @@ class BiasInAIOutput(BaseModel):
 # Create the application object
 app = FastAPI()
 
-# Define actual prediction function.
+# Define the actual function to learn and predict which is also the method
 @app.post("/compute", response_model=BiasInAIOutput)
 async def compute(inp: BiasInAIInputTuples) -> BiasInAIOutput:
     # Copy inp first to a couple of locals.
-    # print("comments:"+type(inp.comments)+" len: %d" % len(inp.comments))
-    # print("target:"+type(inp.target)+ " len: %d" % len(inp.targe))
-    # print(len(inp.comments))
-    # print(len(inp.target))
-    # comments = pd.Series(inp.comments)
-    # target = pd.Series(inp.target)
 
-    print(type(inp.observations))
     obs = inp.observations
 
+    # convert the row of observations to two parallel lists.
     trace_number = 0  # up to trace inputs.
     comments = []
-    target = []
+    targets = []
     item_pos = 0
     for item_pos in range(inp.no_observations):
         if item_pos < trace_number:
             print(obs[item_pos].comment + " is toxic: " + str(obs[item_pos].target))
         comments.append(obs[item_pos].comment)
-        target.append(obs[item_pos].target)
+        targets.append(obs[item_pos].target)
 
     print("comments len = " + str(len(comments)))
     print("target   len = " + str(len(target)))
 
     item_pos = 0
     for item_pos in range(trace_number):
-        print(str(target[item_pos]) + " is toxicity of " + comments[item_pos])
-
-#        print("comments are: " + str(type(comments)) + " first few: " + str(comments[:trace_number]))
-#        print("targets  are: " + str(type(target)) + " first few: " + str(target[:trace_number]))
+        print(str(targets[item_pos]) + " is toxicity of " + comments[item_pos])
 
     new_comment = inp.new_comment
 
@@ -173,14 +137,11 @@ async def compute(inp: BiasInAIInputTuples) -> BiasInAIOutput:
     print("Accuracy:", score)
     print("new_comment: "+new_comment)
 
+    # Print the ten most significant toxic words.
     coefficients = pd.DataFrame({"word": sorted(list(vectorizer.vocabulary_.keys())), "coeff": classifier.coef_[0]})
     last_ten = coefficients.sort_values(by=['coeff']).tail(10)
     print(last_ten)
-    #print(coefficients)
-    #num_rows = len(coefficients)
-    #print("number of rows", num_rows)
 
-    # loc_is_toxic = classifier.predict(vectorizer.transform([new_comment]))[0]
     loc_is_toxic = classify_this_string(new_comment,classifier,vectorizer)
     print("is toxic: ", loc_is_toxic)
 

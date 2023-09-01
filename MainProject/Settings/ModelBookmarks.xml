@@ -1,8 +1,16 @@
 <?xml version="1.0"?>
-<ModelBookmarks TimeStamp="2023-08-25 12:22:52">
+<ModelBookmarks TimeStamp="2023-08-25 12:42:36">
 	<Category Name="b">
 		<Bookmark Node="pr_changeQuantityElementsPerPage" Attribute="body" LineNumber="1">
 			<TextLine>webui::SetProgressMessage("Calculating elements per page...");</TextLine>
+		</Bookmark>
+		<Bookmark Identifier="s_def_idsPerPage" Attribute="definition" LineNumber="1">
+			<TextLine>{i_id | p_calc_idPerPage4Perm(ep_currentPage, i_id)}</TextLine>
+		</Bookmark>
+	</Category>
+	<Category Name="u">
+		<Bookmark Node="pr_uploadLaunchService" Attribute="body" LineNumber="1">
+			<TextLine>_sp_appStoragePath := "PublicData/ServiceApp/biasInAI.zip";</TextLine>
 		</Bookmark>
 	</Category>
 </ModelBookmarks>
