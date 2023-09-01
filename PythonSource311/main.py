@@ -118,7 +118,7 @@ async def compute(inp: BiasInAIInputTuples) -> BiasInAIOutput:
         targets.append(obs[item_pos].target)
 
     print("comments len = " + str(len(comments)))
-    print("target   len = " + str(len(target)))
+    print("targets   len = " + str(len(targets)))
 
     item_pos = 0
     for item_pos in range(trace_number):
@@ -127,7 +127,7 @@ async def compute(inp: BiasInAIInputTuples) -> BiasInAIOutput:
     new_comment = inp.new_comment
 
     # Get the training and test data as globals.
-    vectorizer, X_train, X_test, y_train, y_test = train_on_data(comments, target)
+    vectorizer, X_train, X_test, y_train, y_test = train_on_data(comments, targets)
     print("train on data called")
 
     # Train a model and evaluate performance on test dataset
