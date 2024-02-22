@@ -419,35 +419,45 @@ Model Main_BiasInAI {
 				! if the app does not exist, upload it first
 				_bp_appExists := 0;
 				pro::storage::ExistsObject(_sp_appStoragePath, _bp_appExists);
-				pro::management::LocalLogInfo("pr_uploadLaunchService(): The object '" + _sp_appStoragePath + if _bp_appExists = 1 then " does exist" else " does not exist" endif );
 				
 				if _bp_appExists = 1 then
 					! Clean up previous version.
 					pro::management::LocalLogInfo("pr_uploadLaunchService(): Removing old version of: '" + _sp_appStoragePath );
 					pro::DeleteStorageFile(storagePath : _sp_appStoragePath );
 				endif ;
-				pro::management::LocalLogInfo("pr_uploadLaunchService(): Copying new version of: '" + _sp_appStoragePath );
 				if not pro::SaveFileToCentralStorage(_sp_localApp, _sp_appStoragePath) then
 					raise warning formatString("pr_uploadLaunchService() failed to upload app: %s", _sp_localApp);
 				endif ;
-				
+				pro::storage::ExistsObject(_sp_appStoragePath, _bp_appExists);
+				if _bp_appExists <> 1 then
+					_sp_warning := formatString("Failed to upload app %s to %s",  _sp_localApp, _sp_appStoragePath );
+					pro::management::LocalLogInfo("pr_uploadLaunchService(): " + _sp_warning );
+					raise warning _sp_warning ;
+				endif ;
+				_sp_storedApp := "pro://" + _sp_appStoragePath ;
 				
 				_p_retCodeLaunchService := pro::service::LaunchService(
-					connectionURI      :  _sp_remoteURL, ! output
-					jsonSpec           :  "biasInAIService/biasInAI.json", 
-					storedApp          :  "pro://" + _sp_appStoragePath);
+					connectionURI      :  _sp_remoteURL, ! output, 
+					serviceId          :  "biasInAIService", 
+					imageName          :  "services/aimms-anaconda-service", 
+					imageTag           :  "2023.07-1", 
+					listenPort         :  8000, 
+					storedApp          :  _sp_storedApp, 
+					cmdLine            :  "python3 main.py"   );
+				
 				if not _p_retCodeLaunchService then
-					_sp_errorMessage := formatString("pr_uploadLaunchService(): failed to launch service from %s", _sp_appStoragePath);
+					_sp_errorMessage := formatString("pr_uploadLaunchService(): failed to launch service from %s. ", _sp_appStoragePath);
 					! Get error message in DLL
 					_p_retGetLastError := pro::management::GetLastError( _p_proErrorCode, _sp_proErrorDescription);
 					if _p_retGetLastError then
-						_sp_errorMessage += formatString("%i: %s", _p_proErrorCode, _sp_proErrorDescription);
+						_sp_errorMessage += formatString("code %i: reason: %s", _p_proErrorCode, _sp_proErrorDescription);
 					else
 						_sp_errorMessage += "reason unknown";
 					endif;
+				
 					raise warning _sp_errorMessage ;
-					pro::management::LocalLogInfo( formatString("pr_uploadLaunchService(): _sp_remoteURL = %s, launch service returned %i", 
-						_sp_remoteURL, _p_retCodeLaunchService));
+					pro::management::LocalLogInfo( formatString("pr_uploadLaunchService(): warning = \"%s\", _sp_remoteURL = \"%s\", launch service returned %i", 
+						_sp_errorMessage, _sp_remoteURL, _p_retCodeLaunchService));
 				
 				endif ;
 				
@@ -466,6 +476,8 @@ Model Main_BiasInAI {
 			Parameter _p_proErrorCode;
 			StringParameter _sp_proErrorDescription;
 			StringParameter _sp_errorMessage;
+			StringParameter _sp_storedApp;
+			StringParameter _sp_warning;
 		}
 		Procedure pr_determineToxic {
 			Body: {
