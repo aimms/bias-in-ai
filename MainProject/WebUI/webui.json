@@ -18,8 +18,11 @@
         ]
       }
     },
-    "defaults.upload.download.controls.show": {
+    "data.manager.hidden": {
       "literal": true
+    },
+    "defaults.upload.download.controls.show": {
+      "literal": false
     },
     "ignoredst": {
       "aimms": {
@@ -27,6 +30,9 @@
           "webui::IgnoreDST"
         ]
       }
+    },
+    "menu.hidden": {
+      "literal": true
     },
     "pages": {
       "literal": {
@@ -1550,9 +1556,6 @@
         }
       ]
     },
-    "default.column.width": {
-      "literal": 20
-    },
     "name": {
       "literal": "tbl_dataset"
     },
@@ -2329,8 +2332,8 @@
     "views.0.name": {
       "literal": "unique"
     },
-    "views.current": {
-      "literal": "views.0"
+    "views.0.type": {
+      "literal": "view"
     }
   },
   "widgets/tbl_historicalQueries": {
@@ -2341,8 +2344,14 @@
       "aimms": {
         "contents": [
           "sp_queryAsked",
+          "bp_queryAnswerEmoji",
           "ep_calc_queryAnswer"
         ]
+      }
+    },
+    "contents.displaydomain": {
+      "literal": {
+        "bp_queryansweremoji": "1"
       }
     },
     "contents.partition": {
@@ -2356,6 +2365,18 @@
         "aggregated": []
       }
     },
+    "contents.sorting": {
+      "literal": [
+        {
+          "partIndex": 0,
+          "partOffsets": [
+            -1,
+            2
+          ],
+          "mode": "setorder"
+        }
+      ]
+    },
     "custom.column.widths": {
       "literal": [
         {
@@ -2368,13 +2389,6 @@
         {
           "type": "colHeader",
           "colKey": {
-            "<IDENTIFIER-SET>": "sp_queryAsked"
-          },
-          "width": 59.8
-        },
-        {
-          "type": "colHeader",
-          "colKey": {
             "<IDENTIFIER-SET>": "ep_calc_queryAnswer"
           },
           "width": 21.92
@@ -2383,6 +2397,27 @@
           "type": "rowHeader",
           "colKey": "i_query",
           "width": 11.23
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "sp_queryAsked"
+          },
+          "width": 64.55
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "Copy_ep_calc_queryAnswer"
+          },
+          "width": 34.79
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "bp_queryAnswerEmoji"
+          },
+          "width": 9.37
         }
       ]
     },
@@ -2439,7 +2474,7 @@
       "literal": "text"
     },
     "contents": {
-      "literal": "<div><span style=\"font-size: 32px;\"><b>Story</b></span></div><div><br></div><div><span style=\"font-size: 18px;\">At the end of 2017, the </span><a href=\"https://medium.com/@aja_15265/saying-goodbye-to-civil-comments-41859d3a2b1d\" style=\"font-size: 18px;\" target=\"_blank\">Civil Comments</a><span style=\"font-size: 18px;\"> platform shut down and released their ~2 million public comments in a lasting open archive. Jigsaw sponsored this effort and helped to comprehensively annotate the data.&nbsp; In 2019, Kaggle held the </span><a href=\"https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/overview\" style=\"font-size: 18px;\" target=\"_blank\">Jigsaw Unintended Bias in Toxicity Classification</a><span style=\"font-size: 18px;\"> competition so that data scientists worldwide could work together to investigate ways to mitigate bias.</span></div><div><br></div><div><span style=\"font-size: 18px;\">This project is able to load some of the data from the competition and connect with Python model. After typing a query, the code will run for approximately 30 seconds, when it finishes, you should see as output a message saying if the query you typed is \"toxic\" or \"not toxic\".</span></div><div><br></div>"
+      "literal": "<div><span style=\"font-size: 32px;\"><b>Story</b></span></div><div><br></div><div><span style=\"font-size: 18px;\">At the end of 2017, the </span><a href=\"https://medium.com/@aja_15265/saying-goodbye-to-civil-comments-41859d3a2b1d\" target=\"_blank\"><span style=\"font-size: 18px;\">Civil Comments</span></a><span style=\"font-size: 18px;\"> platform shut down and released their ~2 million public comments in a lasting open archive. Jigsaw sponsored this effort and helped to comprehensively annotate the data.&nbsp;In 2019, Kaggle held the </span><a href=\"https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/overview\" target=\"_blank\"><span style=\"font-size: 18px;\">Jigsaw Unintended Bias in Toxicity Classification</span></a><span style=\"font-size: 18px;\"> competition so that data scientists worldwide could work together to investigate ways to mitigate bias.</span></div><div><br></div><div><span style=\"font-size: 18px;\">This project is able to load some of the data from the competition and connect with Python model. After typing a query, the code will run for approximately 30 seconds, when it finishes, you should see as output a message saying if the query you typed is \"toxic\" or \"not toxic\".</span></div><div><br></div>"
     },
     "name": {
       "literal": "txt_problemDescription"

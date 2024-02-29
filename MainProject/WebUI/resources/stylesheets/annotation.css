@@ -1,16 +1,23 @@
-.annotation-red-chart {
-  fill: var(--secondary);
+.annotation-not-toxic {
+  background: #FF3636;
 }
 
-.annotation-not-red-chart {
-  fill: var(--primaryDark);
+.annotation-toxic {
+  background: #57C126;
 }
 
-.annotation-red-input  {
-	Border: 3px solid red;
-  border-radius: 3px;
+.annotation-toxic-emoji input.boolean-cell-editor-contents,
+.annotation-not-toxic-emoji input.boolean-cell-editor-contents{
+    visibility: hidden;
+    display: block;
 }
-.annotation-green-input  {
-	Border: 1px solid green;
-  border-radius: 3px;
+
+.annotation-toxic-emoji.cell {
+	background: white url(img/poison.png) no-repeat 50%/contain;
+  background-size: auto 70% ;
+}
+
+.annotation-not-toxic-emoji.cell {
+	background: white url(img/like.png) no-repeat 50%/contain;
+  background-size: auto 70% ;
 }

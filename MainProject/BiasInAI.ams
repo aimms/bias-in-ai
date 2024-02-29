@@ -171,6 +171,8 @@ Model Main_BiasInAI {
 				        "Mappings/csv-import-mapping.xml"       ! location + name of mapping file
 				);
 				
+				webui::SetProgressMessage("Initializing dataset...");
+				
 				dex::ReadFromFile(
 				        "data/data.csv",                ! data file
 				        "CSVMapping",                   ! mapping name, as specified in AddMapping
@@ -220,7 +222,7 @@ Model Main_BiasInAI {
 			Section Inputs {
 				Procedure pr_changeQuantityElementsPerPage {
 					Body: {
-						!webui::SetProgressMessage("Calculating elements per page...");
+						webui::SetProgressMessage("Calculating elements per page...");
 						
 						ep_calc_idPerPageFirst(i_page) := Element( s_ids, (ord(i_page)-1)*p_quantityElementsPerPage + 1 );
 						ep_calc_idPerPageLast( i_page) := Element( s_ids, ord(i_page)*p_quantityElementsPerPage );
@@ -296,7 +298,7 @@ Model Main_BiasInAI {
 				}
 				Parameter p_quantityElementsPerPage {
 					Range: [0, 50000];
-					InitialData: 450;
+					InitialData: 350;
 					webui::TooltipIdentifier: sp_def_tooltipQuantityElementsPerPage;
 					webui::UponChangeProcedure: pr_changeQuantityElementsPerPage;
 				}
@@ -373,6 +375,22 @@ Model Main_BiasInAI {
 					InitialData: '';
 					webui::FlagsIdentifier: sp_def_readonly;
 				}
+				Parameter bp_queryAnswerEmoji {
+					IndexDomain: i_query;
+					Range: binary;
+					webui::AnnotationsIdentifier: sp_def_queryAnswerEmoji(i_query);
+				}
+				StringParameter sp_def_queryAnswerEmoji {
+					IndexDomain: i_query;
+					Definition: {
+						if ep_calc_queryAnswer(i_query)= 'Toxic' then
+						    "toxic-emoji"
+						else
+						    "not-toxic-emoji"
+						endif;
+					}
+					webui::FlagsIdentifier: sp_def_readonly;
+				}
 				StringParameter sp_queryAsked {
 					IndexDomain: i_query;
 					webui::FlagsIdentifier: sp_def_readonly;
@@ -380,6 +398,18 @@ Model Main_BiasInAI {
 				Parameter p_def_queryTypePercentage {
 					IndexDomain: i_qType;
 					Definition: sum(i_query, ep_calc_queryAnswer(i_query) = i_qType);
+					Comment: "red-chart";
+					webui::AnnotationsIdentifier: p_def_annotationQueryTypePercentage(i_qType);
+				}
+				StringParameter p_def_annotationQueryTypePercentage {
+					IndexDomain: i_qType;
+					Definition: {
+						if i_qType = 'Toxic' then
+						    "toxic"
+						else
+						    "not-toxic"
+						endif;
+					}
 				}
 				Parameter bp_calc_commentInvestigatedIsToxic {
 					Range: binary;
@@ -407,7 +437,7 @@ Model Main_BiasInAI {
 			}
 		}
 	}
-	Section Leverage_biasInAI_service {
+	Section Leverage_biasInAI_Service {
 		Procedure pr_uploadLaunchService {
 			Body: {
 				_sp_appStoragePath := "PublicData/ServiceApp/biasInAI.zip";
@@ -487,14 +517,13 @@ Model Main_BiasInAI {
 				
 				webui::SetProgressMessage("Investigating query...");
 				
-				!pr_callBiasInAI();
 				pr_callBiasInAITuples();
 				
 				p_loc_responseRetrieved := dex::client::WaitForResponses(timeout :  p_timeOutSeconds * 1000 /* milli seconds */);
 				
 				if not p_loc_responseRetrieved then
 					raise error formatString("no response within %i seconds", p_timeOutSeconds ) ;
-				endif ;
+				endif;
 			}
 			Parameter p_loc_responseRetrieved;
 		}
@@ -516,12 +545,6 @@ Model Main_BiasInAI {
 					ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) 
 					:=  element( s_ids, val( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) );
 				
-				!	for biasInAITuples::_BiasInAIInputTuples::_observations::i_observations do
-				!		_ep_cmtNo := biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ;
-				!		_ep_id := ep_loc_iterToId( _ep_cmtNo ) ;
-				!		biasInAITuples::_BiasInAIInputTuples::_observations::comment_(ep_loc_callInstance, _ep_cmtNo) := sp_commentText( _ep_id ) ;
-				!	endfor ;
-				
 					biasInAITuples::_BiasInAIInputTuples::_observations::comment_( ep_loc_callInstance, biasInAITuples::_BiasInAIInputTuples::_observations::i_observations) 
 					:= sp_commentText( ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) );
 				
@@ -531,22 +554,15 @@ Model Main_BiasInAI {
 					block ! Check if we passed the data correctly.
 						_p_commentsCard := card( biasInAITuples::_BiasInAIInputTuples::_observations::comment_ );
 						if _p_commentsCard <> p_def_cardID then
-							! display _p_commentsCard, p_def_cardID ;
 							raise error "internal error passing data \'comments\'" ;
-						endif ;
+						endif;
 				
-				! Test commented out, as this array will contain many zeros/defaults and card is therefor not a good test for length.
-				!		if card( biasInAITuples::_BiasInAIInputTuples::_observations::target ) <> p_def_cardID then
-				!			raise error "internal error passing data \'target\'" ;
-				!		endif ;
-				
-					endblock ;
-				endblock ;
+					endblock;
+				endblock;
 				
 				! Install hook, which will copy the data or handle the error
 				biasInAITuples::api::compute_compute_post::UserResponseHook 
 				:=  'pr_responseHookTuples' ;
-				
 				
 				! Start the request.
 				biasInAITuples::api::compute_compute_post::apiCall(ep_loc_callInstance);
@@ -569,39 +585,14 @@ Model Main_BiasInAI {
 		Procedure pr_responseHookTuples {
 			Arguments: (ep_in_callInstance);
 			Body: {
-				!ep_loc_status := biasInAI::api::CallStatusCode(ep_in_callInstance);
-				!
-				!if StringLength( sp_queryToInvestigate ) > 5 then
-				!	sp_log_cmtShort := substring( sp_queryToInvestigate, 1, 5 ) + "..." ;
-				!else
-				!	sp_log_cmtShort := sp_queryToInvestigate ;
-				!endif ;
-				!switch (ep_loc_status) do
-				!	'200': ! Call went ok. 
-				!		bp_calc_commentInvestigatedIsToxic := biasInAI::_BiasInAIOutput::is_toxic( ep_in_callInstance );
-				!		ep_calc_queryAnswer(ep_query) := if bp_calc_commentInvestigatedIsToxic then 'Toxic' else 'Not Toxic' endif;
-				!		sp_calc_imageQueryAnswer := if bp_calc_commentInvestigatedIsToxic then "toxic.png" else "not_toxic.png" endif;
-				!		biasInAI::_BiasInAIInput::EmptyInstance(  ep_in_callInstance );
-				!		biasInAI::_BiasInAIOutput::EmptyInstance( ep_in_callInstance );
-				!
-				!	'422': ! HTTP validation error.
-				!	default:
-				!		raise error formatString("biasInAI::isToxic(%s) failed (instance: \'%e\', status: %e, error: %e): %s",
-				!			sp_log_cmtShort, ep_in_callInstance, 
-				!			biasInAI::api::CallStatusCode(ep_in_callInstance), 
-				!			biasInAI::api::CallErrorCode(ep_in_callInstance),
-				!			"" ! Todo: work on the error elaboration!
-				!			);
-				!
-				!endswitch;
-				!
 				ep_loc_status := biasInAITuples::api::CallStatusCode(ep_in_callInstance);
 				
 				if StringLength( sp_queryToInvestigate ) > 5 then
 					sp_log_cmtShort := substring( sp_queryToInvestigate, 1, 5 ) + "..." ;
 				else
 					sp_log_cmtShort := sp_queryToInvestigate ;
-				endif ;
+				endif;
+				
 				switch (ep_loc_status) do
 					'200': ! Call went ok. 
 						bp_calc_commentInvestigatedIsToxic := biasInAITuples::_BiasInAIOutput::is_toxic(ep_in_callInstance) ;
@@ -640,7 +631,7 @@ Model Main_BiasInAI {
 			}
 		}
 	}
-	Section Application_initialization_and_termination {
+	Section Application_Initialization_and_Termination {
 		Procedure MainInitialization {
 			Body: {
 				ProfilerStart();
@@ -650,13 +641,11 @@ Model Main_BiasInAI {
 		Procedure PostMainInitialization {
 			Body: {
 				webui::SetProgressMessage("Initializing dataset...");
-				p_quantityElementsPerPage := 450;
+				
+				p_quantityElementsPerPage := 350;
 				pr_importDataset;
 				
-				webui::SetProgressMessage("");
 				ep_currentpage := first(i_page);
-				
-				!pr_changeQuantityElementsPerPage;
 			}
 			Comment: {
 				"Add initialization statements here that require that the libraries are already initialized properly,
@@ -668,28 +657,23 @@ Model Main_BiasInAI {
 				dex::ReadAllMappings();
 				
 				! Do not launch the Python service for verify sessions and for solver sessions.
-				if        ( pro::proSessionType = ''      ) ! Running in AIMMS Developer
-				       or ( pro::proSessionType = 'webui' ) ! Running deployed on AIMMS Cloud.
+				if (pro::proSessionType = '') ! Running in AIMMS Developer
+				    or (pro::proSessionType = 'webui') ! Running deployed on AIMMS Cloud. 
 				then
 				
 					if pro::GetPROEndPoint() then
-						! See however, https://gitlab.aimms.com/joris/aimms-with-python-service/#making-the-python-sources-available-in-aimms-pro-storage
-						! for initializing the server in the AIMMS Cloud.
 						pr_uploadLaunchService();
 					else
 						! Just use the service started by PyCharm on the biasInAI project.
 						biasInAITuples::api::APIServer :=  "http://localhost:8000" ;
-					endif ;
-				
-					! display dex::Mappings ;
-				
-				endif ;
+					endif;
+				endif;
 			}
 		}
+		Procedure MainExecution;
 		Procedure PreMainTermination {
 			Body: {
 				return 1 ; ! We don't work with cases.
-				!return DataManagementExit();
 			}
 			Comment: {
 				"Add termination statements here that require all libraries to be still alive.
@@ -708,8 +692,5 @@ Model Main_BiasInAI {
 				It is recommended to only use the procedure PreMainTermination to cancel the termination sequence and let this procedure always return 1."
 			}
 		}
-	}
-	Section Application_testing_tracing_and_debugging {
-		Procedure MainExecution;
 	}
 }
