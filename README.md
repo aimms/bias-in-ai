@@ -2,10 +2,9 @@
 
 ![WebUI](https://img.shields.io/badge/UI-WebUI-success)
 
-**Mirrored in:** https://github.com/aimms/--
+**Mirrored in:** https://github.com/aimms/bias-in-ai
 
-**How-to:** https://how-to.aimms.com/Articles/--
-
+**How-to:** https://how-to.aimms.com/Articles/623/623-bias-in-ai.html
 ## Story
 
 At the end of 2017, the Civil Comments (https://medium.com/@aja_15265/saying-goodbye-to-civil-comments-41859d3a2b1d) platform shut down and released their ~2 million public comments in a lasting open archive. Jigsaw sponsored this effort and helped to comprehensively annotate the data.  In 2019, Kaggle held the Jigsaw Unintended Bias in Toxicity Classification (https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/overview) competition so that data scientists worldwide could work together to investigate ways to mitigate bias.
