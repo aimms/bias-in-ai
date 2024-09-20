@@ -4,6 +4,27 @@
     "aimms.widget.type": {
       "literal": "application"
     },
+    "browser.language": {
+      "aimms": {
+        "contents": [
+          "webui::ClientBrowserLanguage"
+        ]
+      }
+    },
+    "browser.name": {
+      "aimms": {
+        "contents": [
+          "webui::ClientBrowserName"
+        ]
+      }
+    },
+    "browser.timezone": {
+      "aimms": {
+        "contents": [
+          "webui::BrowserTimeZone"
+        ]
+      }
+    },
     "browsername": {
       "aimms": {
         "contents": [
