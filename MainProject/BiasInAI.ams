@@ -379,14 +379,17 @@ Model Main_BiasInAI {
 					IndexDomain: i_query;
 					Range: binary;
 					webui::AnnotationsIdentifier: sp_def_queryAnswerEmoji(i_query);
+					webui::FlagsIdentifier: sp_def_readonly;
 				}
 				StringParameter sp_def_queryAnswerEmoji {
 					IndexDomain: i_query;
 					Definition: {
 						if ep_calc_queryAnswer(i_query)= 'Toxic' then
 						    "toxic-emoji"
-						else
+						elseif ep_calc_queryAnswer(i_query)= 'Not Toxic' then
 						    "not-toxic-emoji"
+						else
+						    "crossed-emoji"
 						endif;
 					}
 					webui::FlagsIdentifier: sp_def_readonly;
@@ -443,7 +446,7 @@ Model Main_BiasInAI {
 				_sp_appStoragePath := "PublicData/ServiceApp/biasInAI.zip";
 				_sp_localApp := "biasInAIService/biasInAI.zip";
 				if not FileExists( _sp_localApp ) then
-					raise warning formatString("This .aimmspack does not oontain required %s", _sp_localApp);
+					webui::ShowMessage('warning', FormatString("This .aimmspack does not oontain required %s", _sp_localApp));
 				endif ;
 				
 				! if the app does not exist, upload it first
@@ -456,13 +459,13 @@ Model Main_BiasInAI {
 					pro::DeleteStorageFile(storagePath : _sp_appStoragePath );
 				endif ;
 				if not pro::SaveFileToCentralStorage(_sp_localApp, _sp_appStoragePath) then
-					raise warning formatString("pr_uploadLaunchService() failed to upload app: %s", _sp_localApp);
+					webui::ShowMessage('warning', FormatString("pr_uploadLaunchService() failed to upload app: %s", _sp_localApp));
 				endif ;
 				pro::storage::ExistsObject(_sp_appStoragePath, _bp_appExists);
 				if _bp_appExists <> 1 then
-					_sp_warning := formatString("Failed to upload app %s to %s",  _sp_localApp, _sp_appStoragePath );
+					_sp_warning := FormatString("Failed to upload app %s to %s",  _sp_localApp, _sp_appStoragePath );
 					pro::management::LocalLogInfo("pr_uploadLaunchService(): " + _sp_warning );
-					raise warning _sp_warning ;
+					webui::ShowMessage('warning', _sp_warning);
 				endif ;
 				_sp_storedApp := "pro://" + _sp_appStoragePath ;
 				
@@ -476,22 +479,22 @@ Model Main_BiasInAI {
 					cmdLine            :  "python3 main.py"   );
 				
 				if not _p_retCodeLaunchService then
-					_sp_errorMessage := formatString("pr_uploadLaunchService(): failed to launch service from %s. ", _sp_appStoragePath);
+					_sp_errorMessage := FormatString("pr_uploadLaunchService(): failed to launch service from %s. ", _sp_appStoragePath);
 					! Get error message in DLL
 					_p_retGetLastError := pro::management::GetLastError( _p_proErrorCode, _sp_proErrorDescription);
 					if _p_retGetLastError then
-						_sp_errorMessage += formatString("code %i: reason: %s", _p_proErrorCode, _sp_proErrorDescription);
+						_sp_errorMessage += FormatString("code %i: reason: %s", _p_proErrorCode, _sp_proErrorDescription);
 					else
 						_sp_errorMessage += "reason unknown";
 					endif;
 				
-					raise warning _sp_errorMessage ;
-					pro::management::LocalLogInfo( formatString("pr_uploadLaunchService(): warning = \"%s\", _sp_remoteURL = \"%s\", launch service returned %i", 
+					webui::ShowMessage('warning', _sp_errorMessage);
+					pro::management::LocalLogInfo( FormatString("pr_uploadLaunchService(): warning = \"%s\", _sp_remoteURL = \"%s\", launch service returned %i", 
 						_sp_errorMessage, _sp_remoteURL, _p_retCodeLaunchService));
 				
 				endif ;
 				
-				pro::management::LocalLogInfo( formatString("pr_uploadLaunchService(): _sp_remoteURL = %s, launch service returned %i", 
+				pro::management::LocalLogInfo( FormatString("pr_uploadLaunchService(): _sp_remoteURL = %s, launch service returned %i", 
 					_sp_remoteURL, _p_retCodeLaunchService));
 				
 				! Set the service.
@@ -522,7 +525,7 @@ Model Main_BiasInAI {
 				p_loc_responseRetrieved := dex::client::WaitForResponses(timeout :  p_timeOutSeconds * 1000 /* milli seconds */);
 				
 				if not p_loc_responseRetrieved then
-					raise error formatString("no response within %i seconds", p_timeOutSeconds ) ;
+					webui::ShowMessage('error', FormatString("No response within %i seconds.", p_timeOutSeconds));
 				endif;
 			}
 			Parameter p_loc_responseRetrieved;
@@ -554,7 +557,7 @@ Model Main_BiasInAI {
 					block ! Check if we passed the data correctly.
 						_p_commentsCard := card( biasInAITuples::_BiasInAIInputTuples::_observations::comment_ );
 						if _p_commentsCard <> p_def_cardID then
-							raise error "internal error passing data \'comments\'" ;
+							webui::ShowMessage('error', "Internal error passing data \'comments\'." );
 						endif;
 				
 					endblock;
@@ -606,12 +609,12 @@ Model Main_BiasInAI {
 						display { biasInAITuples::_HTTPValidationError::_detail::msg, 
 							biasInAITuples::_HTTPValidationError::_detail::type_ }, 
 							biasInAITuples::_HTTPValidationError::_detail::_loc::loc ;
-						raise error formatString("biasInAITuples::isToxic(%s)/%s failed ( status: %e, error: %e): %s",
+						webui::ShowMessage('error', FormatString("biasInAITuples::isToxic(%s)/%s failed ( status: %e, error: %e): %s.",
 							sp_log_cmtShort,  ep_in_callInstance,
 							biasInAITuples::api::CallStatusCode(ep_in_callInstance), 
 							biasInAITuples::api::CallErrorCode(ep_in_callInstance),
 							"" ! Todo: work on the error elaboration!
-							);
+							));
 				
 				endswitch;
 			}

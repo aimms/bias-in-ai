@@ -2262,7 +2262,8 @@
     },
     "contents.displaydomain": {
       "literal": {
-        "bp_queryansweremoji": "1"
+        "bp_queryansweremoji": "1",
+        "sp_queryasked": "1"
       }
     },
     "contents.partition": {

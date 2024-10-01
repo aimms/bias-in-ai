@@ -7,7 +7,8 @@
 }
 
 .annotation-toxic-emoji input.boolean-cell-editor-contents,
-.annotation-not-toxic-emoji input.boolean-cell-editor-contents{
+.annotation-not-toxic-emoji input.boolean-cell-editor-contents,
+.annotation-crossed-emoji input.boolean-cell-editor-contents{
     visibility: hidden;
     display: block;
 }
@@ -19,5 +20,10 @@
 
 .annotation-not-toxic-emoji.cell {
 	background: white url(img/like.png) no-repeat 50%/contain;
+  background-size: auto 70% ;
+}
+
+.annotation-crossed-emoji.cell {
+	background: white url(img/crossed.png) no-repeat 50%/contain;
   background-size: auto 70% ;
 }
