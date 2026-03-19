@@ -4,7 +4,9 @@ LibraryModule openapi_biasInAITuples {
 	Prefix: biasInAITuples;
 	Interface: Public_Section;
 	Property: NoSave;
+	Comment: "OpenAPI client library for the biasInAI Python service, providing auto-generated schema modules and REST API call procedures.";
 	Section Public_Section {
+		Comment: "Contains publicly accessible procedures and schema data modules for interacting with the biasInAI OpenAPI service.";
 		Procedure InitializeAPIClient {
 			Body: {
 				! Read mapping files for this library.
@@ -15,13 +17,14 @@ LibraryModule openapi_biasInAITuples {
 					errh::MarkAsHandled(err);
 				endblock;
 				dex::ReadMappings(libFolder, "openapi-biasInAITuples", 1);
-				
+
 				! Read server initialization data (e.g. service URL, api key, OAuth credentials)
 				apiInitFile := "../api-init/openapi-biasInAITuples.txt";
 				if FileExists(apiInitFile) then
 					read from file apiInitFile;
 				endif ;
 			}
+			Comment: "Reads the DEX mapping files for this library and loads optional server initialization data such as the API server URL and credentials.";
 			DeclarationSection Locals {
 				StringParameter libFolder;
 				StringParameter apiInitFile;
@@ -31,10 +34,12 @@ LibraryModule openapi_biasInAITuples {
 			}
 		}
 		Section Schema_Data {
+			Comment: "Contains all auto-generated AIMMS modules representing the request and response schemas defined in the biasInAI OpenAPI specification.";
 			Set Instances {
 				SubsetOf: dex::Instances;
 				Index: i_instance, i_childInstance;
 				Parameter: CurrentInstance, NewInstance, CallInstance;
+				Comment: "Set of active call instances, scoped to this library; each instance corresponds to one asynchronous API call.";
 			}
 			Set Iterators {
 				SubsetOf: Integers;
@@ -43,34 +48,41 @@ LibraryModule openapi_biasInAITuples {
 			}
 			Module BiasInAIInputTuples_ {
 				Prefix: _BiasInAIInputTuples;
+				Comment: "Module representing the BiasInAIInputTuples request schema, holding the number of observations, new comment, and per-observation data.";
 				Parameter no_observations {
 					IndexDomain: (biasInAITuples::i_instance);
 					Default: 0;
+					Comment: "Number of training observations to send to the biasInAI service for the toxicity classification request.";
 				}
 				StringParameter new_comment {
 					IndexDomain: (biasInAITuples::i_instance);
 					Default: "";
+					Comment: "The new comment text to be classified for toxicity by the biasInAI service.";
 				}
 				Module observations_ {
 					Prefix: _observations;
+					Comment: "Module representing the array of training observations included in the biasInAI service request.";
 					Set observations_iter {
 						SubsetOf: Integers;
 						Index: i_observations;
+						Comment: "Integer iteration set used to index the individual training observations in the request payload.";
 					}
 					StringParameter comment_ {
 						IndexDomain: (biasInAITuples::i_instance,i_observations);
 						Default: "";
+						Comment: "Text of each training observation comment passed to the biasInAI service.";
 					}
 					Parameter target {
 						IndexDomain: (biasInAITuples::i_instance,i_observations);
 						Default: 0;
+						Comment: "Binary toxicity label for each training observation, used as the ground-truth target for the model.";
 					}
 				}
 				Procedure EmptyInstance {
 					Arguments: (instance_);
 					Body: {
 						InstancesToEmpty += instance_;
-						
+
 						empty no_observations(i_empty_inst), _observations::comment_(i_empty_inst,_observations::i_observations), _observations::target(i_empty_inst,_observations::i_observations),
 						      new_comment(i_empty_inst);
 					}
@@ -89,15 +101,17 @@ LibraryModule openapi_biasInAITuples {
 			}
 			Module BiasInAIOutput_ {
 				Prefix: _BiasInAIOutput;
+				Comment: "Module representing the BiasInAIOutput response schema, holding the toxicity classification result returned by the service.";
 				Parameter is_toxic {
 					IndexDomain: (biasInAITuples::i_instance);
 					Default: 0;
+					Comment: "Binary flag returned by the biasInAI service indicating whether the submitted comment is classified as toxic (1) or not (0).";
 				}
 				Procedure EmptyInstance {
 					Arguments: (instance_);
 					Body: {
 						InstancesToEmpty += instance_;
-						
+
 						empty is_toxic(i_empty_inst);
 					}
 					Comment: "Empties all data for instance of current schema";
@@ -115,29 +129,37 @@ LibraryModule openapi_biasInAITuples {
 			}
 			Module HTTPValidationError_ {
 				Prefix: _HTTPValidationError;
+				Comment: "Module representing the HTTPValidationError response schema returned by the service when a 422 validation error occurs.";
 				Module detail_ {
 					Prefix: _detail;
+					Comment: "Module representing the array of validation error detail objects within an HTTPValidationError response.";
 					Set detail_iter {
 						SubsetOf: Integers;
 						Index: i_detail;
+						Comment: "Integer iteration set used to index the individual validation error detail entries.";
 					}
 					StringParameter msg {
 						IndexDomain: (biasInAITuples::i_instance,i_detail);
 						Default: "";
+						Comment: "Human-readable error message for each validation error detail entry.";
 					}
 					StringParameter type_ {
 						IndexDomain: (biasInAITuples::i_instance,i_detail);
 						Default: "";
+						Comment: "Error type identifier for each validation error detail entry.";
 					}
 					Module loc_ {
 						Prefix: _loc;
+						Comment: "Module representing the location array within a validation error detail, identifying the field that caused the error.";
 						Set loc_iter {
 							SubsetOf: Integers;
 							Index: i_loc;
+							Comment: "Integer iteration set used to index the individual location path segments within a validation error detail.";
 						}
 						StringParameter loc {
 							IndexDomain: (biasInAITuples::i_instance,i_detail,i_loc);
 							Default: "";
+							Comment: "Path segment identifying the location of the validation error within the request payload.";
 						}
 					}
 				}
@@ -145,7 +167,7 @@ LibraryModule openapi_biasInAITuples {
 					Arguments: (instance_);
 					Body: {
 						InstancesToEmpty += instance_;
-						
+
 						empty _detail::_loc::loc(i_empty_inst,_detail::i_detail,_detail::_loc::i_loc), _detail::msg(i_empty_inst,_detail::i_detail),
 						      _detail::type_(i_empty_inst,_detail::i_detail);
 					}
@@ -164,19 +186,22 @@ LibraryModule openapi_biasInAITuples {
 			}
 			Module Observation_ {
 				Prefix: _Observation;
+				Comment: "Module representing the Observation schema, used for individual comment and target pairs within the biasInAI API.";
 				StringParameter comment_ {
 					IndexDomain: (biasInAITuples::i_instance);
 					Default: "";
+					Comment: "Text of the observation comment associated with this schema instance.";
 				}
 				Parameter target {
 					IndexDomain: (biasInAITuples::i_instance);
 					Default: 0;
+					Comment: "Binary toxicity target label for this observation instance.";
 				}
 				Procedure EmptyInstance {
 					Arguments: (instance_);
 					Body: {
 						InstancesToEmpty += instance_;
-						
+
 						empty comment_(i_empty_inst), target(i_empty_inst);
 					}
 					Comment: "Empties all data for instance of current schema";
@@ -194,30 +219,36 @@ LibraryModule openapi_biasInAITuples {
 			}
 			Module ValidationError_ {
 				Prefix: _ValidationError;
+				Comment: "Module representing the ValidationError schema returned by FastAPI for individual field validation failures.";
 				Module loc_ {
 					Prefix: _loc;
+					Comment: "Module representing the location array within a ValidationError, identifying the field path that failed validation.";
 					Set loc_iter {
 						SubsetOf: Integers;
 						Index: i_loc;
+						Comment: "Integer iteration set used to index the individual location path segments within a ValidationError.";
 					}
 					StringParameter loc {
 						IndexDomain: (biasInAITuples::i_instance,i_loc);
 						Default: "";
+						Comment: "Path segment identifying the field location of the validation error within the request.";
 					}
 				}
 				StringParameter msg {
 					IndexDomain: (biasInAITuples::i_instance);
 					Default: "";
+					Comment: "Human-readable error message describing the validation failure.";
 				}
 				StringParameter type_ {
 					IndexDomain: (biasInAITuples::i_instance);
 					Default: "";
+					Comment: "Error type identifier for the validation failure.";
 				}
 				Procedure EmptyInstance {
 					Arguments: (instance_);
 					Body: {
 						InstancesToEmpty += instance_;
-						
+
 						empty _loc::loc(i_empty_inst,_loc::i_loc), msg(i_empty_inst), type_(i_empty_inst);
 					}
 					Comment: "Empties all data for instance of current schema";
@@ -236,6 +267,7 @@ LibraryModule openapi_biasInAITuples {
 		}
 		Module API_Client_Procedures {
 			Prefix: api;
+			Comment: "Module containing all auto-generated API client procedures and configuration parameters for interacting with the biasInAI service endpoints.";
 			Set RequestHeaders {
 				Index: reqhdr;
 				Comment: "Set containing the request headers used by any method in the OpenAPI specification";
@@ -301,7 +333,7 @@ LibraryModule openapi_biasInAITuples {
 			StringParameter RequestResponseFilePrefix {
 				Default: "##";
 				Comment: {
-					"Prefix for all request and response files to, e.g., specify a subdirectory, or 
+					"Prefix for all request and response files to, e.g., specify a subdirectory, or
 					indicate the use of memory streams, see https://documentation.aimms.com/dataexchange/api.html#memory-streams"
 				}
 			}
@@ -342,9 +374,9 @@ LibraryModule openapi_biasInAITuples {
 						url := "/compute";
 						Iterators += { 1 };
 						CurrentInstance := callInstance;
-						
+
 						! For all method arguments, apply the path substitutions or add the query parameters
-						
+
 						! Create the final method url. If (additional) query parameters are present, append them to the url
 						if (Card(QueryParamValue) or AdditionalQueryParameters(callInstance)) then
 							dex::client::QueryMapEncode(QueryParamValue,qparval);
@@ -353,36 +385,36 @@ LibraryModule openapi_biasInAITuples {
 						else
 							url := FormatString("%s%s", APIServer, url);
 						endif;
-						
+
 						if (not RequestFile(callInstance, 'requestbody')) then
 							! If not provided explicitly, write the request file using the BiasInAIInputTuples schema
 							RequestFile(callInstance, 'requestbody') := FormatString("%srequest-%s.json", RequestResponseFilePrefix, callInstance);
 							requestFileMapping('requestbody') := "openapi-biasInAITuples/json/BiasInAIInputTuples";
 							dex::WriteToFile(RequestFile(callInstance, 'requestbody'), requestFileMapping('requestbody'), 1);
 						endif;
-						
+
 						! Create a callInstance-specific response and tracing file if necessary and create the CURL request
 						ResponseFile(callInstance, 'responsebody') := FormatString("%sresponse-%s", RequestResponseFilePrefix, callInstance);
 						if (RequestTracing) then TracingFile(callInstance) := FormatString("%stracing-%s", RequestResponseFilePrefix, callInstance); endif;
-						
+
 						dex::client::NewRequest(callInstance, url, 'biasInAITuples::api::compute_compute_post::callback', 'post', RequestFile(callInstance, 'requestbody'), ResponseFile(callInstance, 'responsebody'), TracingFile(callInstance));
-						
+
 						! Add an API key header or an OAuth2 bearer token to authorize the API call
 						if (OAuth2APIClient) then dex::oauth::AddBearerToken(OAuth2APIClient, callInstance); endif;
-						
+
 						! If a user request hook is defined for the method, call it prior to finishing and performing the request
 						if (NonDefault(UserRequestHook)) then apply(UserRequestHook, callInstance); endif;
-						
+
 						! Add any method headers present
 						dex::client::AddRequestHeaders(callInstance, RequestHeaderValue(callInstance, .));
-						
+
 						! Add any cookies present
 						for (cookie | CookieValue(callInstance, cookie)) do cookieString $+= ", "; cookieString += CookieValue(callInstance, cookie); endfor;
 						if (cookieString) then dex::client::AddStringOption(callInstance, dex::client::CurlOptionId('COOKIE'), cookieString); endif;
-						
+
 						! Add the global CURL options specified for this API
 						dex::client::AddRequestOptions(callInstance, IntOptions, StringOptions);
-						
+
 						! Finally, perform the API call
 						dex::client::PerformRequest(callInstance);
 					}
@@ -421,25 +453,25 @@ LibraryModule openapi_biasInAITuples {
 						! Re-create the callInstance element from theRequest and set CurrentInstance needed by the schema mapping files
 						callInstance := StringToElement(Instances, theRequest);
 						CurrentInstance := callInstance;
-						
+
 						! Determine and store the HTTP status code
 						status_ := StringToElement(dex::HTTPStatusCodes, statusCode);
 						CallStatusCode(callInstance) := status_;
 						CallErrorCode(callInstance) := errorCode;
-						
+
 						! Don't parse responses if there is a CURL error code, but do call the response hook
 						if (errorCode) then
 							if (NonDefault(UserResponseHook)) then apply(UserResponseHook, callInstance); endif;
 							return;
 						endif;
-						
+
 						! Get the roundtrip time for the API call
 						dex::client::GetIntInfoItem(callInstance, dex::client::CurlInfoId('TOTAL_TIME_T'), CallTime(callInstance));
 						CallTime(callInstance) /= 1000000;
-						
+
 						! Store all response headers returned in the response
 						dex::client::GetResponseHeaders(callInstance, ResponseHeaderValue(callInstance,respheader));
-						
+
 						! Based on the HTTP status, handle the response using the appropriate schema
 						switch (status_) do
 							'200':
@@ -448,19 +480,20 @@ LibraryModule openapi_biasInAITuples {
 									responseFileMapping('responsebody') := "openapi-biasInAITuples/json/BiasInAIOutput";
 									CallErrorCode(callInstance) := dex::ProtectedReadFromFile(ResponseFile(callInstance, 'responsebody'), responseFileMapping('responsebody'));
 								endif;
-						
+
 							'422':
 								if (DeserializeResponse('422')) then
 									! Conditionally read the response file using the HTTPValidationError schema
 									responseFileMapping('responsebody') := "openapi-biasInAITuples/json/HTTPValidationError";
 									CallErrorCode(callInstance) := dex::ProtectedReadFromFile(ResponseFile(callInstance, 'responsebody'), responseFileMapping('responsebody'));
 								endif;
-						
+
 						endswitch;
-						
+
 						! If a user response hook is defined for the method, call it here after retrieving and storing all response data
 						if (NonDefault(UserResponseHook)) then apply(UserResponseHook, callInstance); endif;
 					}
+					Comment: "Internal CURL callback for the compute POST endpoint; stores the HTTP status code, deserializes the response body using the appropriate schema, and invokes the user-defined response hook.";
 					DeclarationSection Locals {
 						StringParameter theRequest {
 							Property: Input;
@@ -518,6 +551,7 @@ LibraryModule openapi_biasInAITuples {
 				Set RequestParts {
 					Index: reqpart;
 					InitialData: data { 'requestbody' };
+					Comment: "Set of named request body parts for this method; contains 'requestbody' for the JSON request payload.";
 				}
 				Set MimeHeaders {
 					SubsetOf: biasInAITuples::api::RequestHeaders;
@@ -540,6 +574,7 @@ LibraryModule openapi_biasInAITuples {
 				Set ResponseParts {
 					Index: resppart;
 					InitialData: data { 'responsebody' };
+					Comment: "Set of named response body parts for this method; contains 'responsebody' for the JSON response payload.";
 				}
 				StringParameter ResponseFile {
 					IndexDomain: (i_instance, resppart);
@@ -575,11 +610,14 @@ LibraryModule openapi_biasInAITuples {
 		}
 	}
 	Section Private_Section {
+		Comment: "Contains private library lifecycle procedures that are not exposed through the library interface.";
 		Section Library_Initialization_and_Termination {
+			Comment: "Contains the standard AIMMS library lifecycle procedures for initialization and termination of the openapi-biasInAITuples library.";
 			Procedure LibraryInitialization {
 				Body: {
 					InitializeAPIClient;
 				}
+				Comment: "Initializes the biasInAITuples OpenAPI client library by reading DEX mappings and loading server configuration data.";
 			}
 			Procedure PostLibraryInitialization {
 				Comment: {

@@ -3,6 +3,7 @@
 Model Main_BiasInAI {
 	Comment: "See also https://gitlab.aimms.com/joris/aimms-with-python-service/";
 	Section Data_Model {
+		Comment: "Contains all data identifiers for the bias-in-AI dataset, including toxicity scores, demographic identity annotations, and article metadata.";
 		Section Quantities_and_Units {
 			Comment: {
 				"This section contains all the units and quantities that are added automatically by AIMMS.
@@ -13,9 +14,9 @@ Model Main_BiasInAI {
 				Conversions: minute->s : #-># * 60;
 				Comment: {
 					"Expresses the value for the duration of periods.
-					
+
 					The unit s has been added automatically because it is a required unit for AimmsWebUI.
-					
+
 					The unit minute has been added automatically because it is a required unit for AimmsWebUI."
 				}
 			}
@@ -24,155 +25,205 @@ Model Main_BiasInAI {
 			SubsetOf: Integers;
 			Index: i_id;
 			Parameter: ep_id;
+			Comment: "Set of unique comment identifiers in the dataset, indexed by i_id.";
 		}
 		Parameter p_target {
 			IndexDomain: i_id;
+			Comment: "Raw toxicity score for each comment, ranging from 0 to 1 as annotated by human raters.";
 		}
 		Parameter bp_target {
 			IndexDomain: i_id;
 			Range: binary;
 			Definition: 1 $ ( p_target(i_id) > 0.7 );
+			Comment: "Binary indicator (1/0) representing whether a comment is considered toxic (target score > 0.7).";
 		}
 		StringParameter sp_commentText {
 			IndexDomain: i_id;
+			Comment: "The raw text content of each comment in the dataset.";
 		}
 		Parameter p_severeToxicity {
 			IndexDomain: i_id;
+			Comment: "Score indicating the probability that a comment contains severe toxicity, as rated by annotators.";
 		}
 		Parameter p_obscene {
 			IndexDomain: i_id;
+			Comment: "Score indicating the probability that a comment contains obscene content, as rated by annotators.";
 		}
 		Parameter p_identityAttack {
 			IndexDomain: i_id;
+			Comment: "Score indicating the probability that a comment contains an identity-based attack, as rated by annotators.";
 		}
 		Parameter p_insult {
 			IndexDomain: i_id;
+			Comment: "Score indicating the probability that a comment contains an insult, as rated by annotators.";
 		}
 		Parameter p_threat {
 			IndexDomain: i_id;
+			Comment: "Score indicating the probability that a comment contains a threat, as rated by annotators.";
 		}
 		Parameter p_asian {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing the Asian demographic group.";
 		}
 		Parameter p_atheist {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing the atheist demographic group.";
 		}
 		Parameter p_bisexual {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing bisexual individuals.";
 		}
 		Parameter p_black {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing the Black demographic group.";
 		}
 		Parameter p_buddhist {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing the Buddhist demographic group.";
 		}
 		Parameter p_christian {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing the Christian demographic group.";
 		}
 		Parameter p_female {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing female individuals.";
 		}
 		Parameter p_heterosexual {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing heterosexual individuals.";
 		}
 		Parameter p_hindu {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing the Hindu demographic group.";
 		}
 		Parameter p_homosexualGayLesbian {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing gay or lesbian individuals.";
 		}
 		Parameter p_intellectualLearningDisability {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing individuals with intellectual or learning disabilities.";
 		}
 		Parameter p_jewish {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing the Jewish demographic group.";
 		}
 		Parameter p_latino {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing the Latino demographic group.";
 		}
 		Parameter p_male {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing male individuals.";
 		}
 		Parameter p_muslim {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing the Muslim demographic group.";
 		}
 		Parameter p_otherDisability {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing individuals with other types of disabilities.";
 		}
 		Parameter p_otherGender {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing individuals of other or non-binary gender identities.";
 		}
 		Parameter p_otherraceethnicity {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing other race or ethnicity groups not explicitly categorized.";
 		}
 		Parameter p_otherReligion {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing other religious groups not explicitly categorized.";
 		}
 		Parameter p_otherSexualOrientation {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing other sexual orientations not explicitly categorized.";
 		}
 		Parameter p_physicalDisability {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing individuals with physical disabilities.";
 		}
 		Parameter p_psychiatricMentalIllness {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing individuals with psychiatric or mental illness conditions.";
 		}
 		Parameter p_transgender {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing transgender individuals.";
 		}
 		Parameter p_white {
 			IndexDomain: i_id;
+			Comment: "Fraction of annotators who identified the comment as referencing the White demographic group.";
 		}
 		StringParameter sp_createdDate {
 			IndexDomain: i_id;
+			Comment: "The creation date of each comment as a string value, indicating when it was originally posted.";
 		}
 		Parameter p_publicationID {
 			IndexDomain: i_id;
+			Comment: "Identifier linking each comment to its source publication or media outlet.";
 		}
 		Parameter p_parentID {
 			IndexDomain: i_id;
+			Comment: "Identifier of the parent comment, used to track threaded discussions and reply chains.";
 		}
 		Parameter p_articleID {
 			IndexDomain: i_id;
+			Comment: "Identifier of the article that the comment was posted in response to.";
 		}
 		StringParameter sp_rating {
 			IndexDomain: i_id;
+			Comment: "Editorial or community rating label assigned to each comment.";
 		}
 		Parameter p_funny {
 			IndexDomain: i_id;
+			Comment: "Count or fraction of readers who rated the comment as funny.";
 		}
 		Parameter p_wow {
 			IndexDomain: i_id;
+			Comment: "Count or fraction of readers who reacted to the comment with a 'wow' response.";
 		}
 		Parameter p_sad {
 			IndexDomain: i_id;
+			Comment: "Count or fraction of readers who rated the comment as sad.";
 		}
 		Parameter p_likes {
 			IndexDomain: i_id;
+			Comment: "Count or fraction of readers who liked the comment.";
 		}
 		Parameter p_disagree {
 			IndexDomain: i_id;
+			Comment: "Count or fraction of readers who disagreed with the comment.";
 		}
 		Parameter p_sexualExplicit {
 			IndexDomain: i_id;
+			Comment: "Score indicating the probability that a comment contains sexually explicit content, as rated by annotators.";
 		}
 		Parameter p_identityAnnotatorCount {
 			IndexDomain: i_id;
+			Comment: "Number of annotators who provided identity-related labels for each comment.";
 		}
 		Parameter p_toxicityAnnotatorCount {
 			IndexDomain: i_id;
+			Comment: "Number of annotators who provided toxicity-related labels for each comment.";
 		}
 	}
 	Section Integration {
+		Comment: "Contains procedures for importing and integrating external dataset files into the AIMMS data model.";
 		Procedure pr_importDataset {
 			Body: {
+				! Register the CSV mapping configuration for data import.
 				dex::AddMapping(
 				        "CSVMapping",                   ! mapping name
 				        "Mappings/csv-import-mapping.xml"       ! location + name of mapping file
 				);
-				
+
+				! Notify the user that initialization has started.
 				webui::SetProgressMessage("Initializing dataset...");
-				
+
+				! Read the dataset from the CSV file using the registered mapping.
 				dex::ReadFromFile(
 				        "data/data.csv",                ! data file
 				        "CSVMapping",                   ! mapping name, as specified in AddMapping
@@ -180,27 +231,36 @@ Model Main_BiasInAI {
 				        1,                              ! empty range sets
 				        1                               ! reset 'iterative-binds-to'
 				);
-				
+
+				! Recalculate pagination after data is loaded.
 				pr_changeQuantityElementsPerPage;
 			}
+			Comment: "Loads the bias-in-AI dataset from the CSV file using the DEX data exchange library and refreshes pagination.";
 		}
 	}
 	Section UI_Declarations {
-		Procedure pr_empty;
+		Comment: "Contains all WebUI-related identifiers, including workflow definitions, page navigation, and UI configuration parameters.";
+		Procedure pr_empty {
+			Comment: "Empty no-operation procedure used as a placeholder WebUI callback for widgets that do not require an action.";
+		}
 		StringParameter sp_logo {
 			Definition: "aimms_logo.png";
+			Comment: "File name of the AIMMS logo image used in the application header.";
 		}
 		StringParameter sp_def_readonly {
 			Definition: "readonly";
+			Comment: "Constant string value 'readonly' used as the WebUI flags identifier to mark widgets as read-only.";
 		}
 		Section Workflow {
+			Comment: "Defines the WebUI workflow configuration, including workflow steps and their page navigation settings.";
 			StringParameter sp_myWorkflows {
 				IndexDomain: (webui::indexWorkflowOrder,webui::indexWorkflowSpec);
+				Comment: "Holds the top-level workflow definitions used by the WebUI workflow panel.";
 			}
 			StringParameter sp_myWorkflowSteps {
 				IndexDomain: (webui::indexWorkflowOrder,webui::indexNoOfPages,webui::indexWorkflowPageSpec);
 				Definition: {
-					data 
+					data
 					{ ( 1, 1, displayText       ) : "Welcome"            ,  ( 1, 1, icon              ) : "aimms-happy"        ,
 					  ( 1, 1, pageId            ) : "home"               ,  ( 1, 1, tooltip           ) : "welcome"            ,
 					  ( 1, 1, workflowPageState ) : "active"             ,  ( 1, 1, pageDataState     ) : "Incomplete"         ,
@@ -216,68 +276,84 @@ Model Main_BiasInAI {
 					  ( 1, 4, tooltip           ) : "Model outputs"      ,  ( 1, 4, workflowPageState ) : "active"             ,
 					  ( 1, 4, pageDataState     ) : "Incomplete"         ,  ( 1, 4, redirectPageId    ) : "home"                }
 				}
+				Comment: "Defines the ordered steps in the application workflow, including page IDs, tooltips, icons, and state settings for each step.";
 			}
 		}
 		Section Pages {
+			Comment: "Contains page-specific declarations for the WebUI, organized by input and results pages.";
 			Section Inputs {
+				Comment: "Contains identifiers and procedures supporting the dataset input and pagination functionality on the Inputs page.";
 				Procedure pr_changeQuantityElementsPerPage {
 					Body: {
+						! Notify the user that page calculation is in progress.
 						webui::SetProgressMessage("Calculating elements per page...");
-						
+
+						! Calculate the first and last element identifier for each page based on the page size.
 						ep_calc_idPerPageFirst(i_page) := Element( s_ids, (ord(i_page)-1)*p_quantityElementsPerPage + 1 );
 						ep_calc_idPerPageLast( i_page) := Element( s_ids, ord(i_page)*p_quantityElementsPerPage );
+
+						! Determine the last page and ensure its last element is the final ID in the dataset.
 						ep_lastPage := last(s_def_pages);
 						if not ep_calc_idPerPageLast( ep_lastPage) then
 							ep_calc_idPerPageLast( ep_lastPage) := last( s_ids );
 						endif ;
-						
+
+						! Rebuild the binary page membership parameter for all pages.
 						empty p_calc_idPerPage;
 						for i_page do
+							! Determine the subset of IDs for the current page using SubRange.
 							s_pageIds := SubRange(
-								Superset :  s_ids, 
-								First    :  ep_calc_idPerPageFirst(i_page), 
+								Superset :  s_ids,
+								First    :  ep_calc_idPerPageFirst(i_page),
 								Last     :  ep_calc_idPerPageLast( i_page));
 							p_calc_idPerPage(i_page, i_pid ) := 1;
 						endfor ;
 					}
+					Comment: "Recalculates the first and last element identifiers for each page based on the current quantity of elements per page setting.";
 				}
 				Procedure pr_previousPage {
 					Body: {
 						if ep_currentPage = first(i_page) then
 						    !do nothing
-						else    
+						else
 						    ep_currentPage -= 1;
-						
+
 						endif;
 					}
+					Comment: "Navigates to the previous page in the dataset viewer; has no effect if already on the first page.";
 				}
 				Procedure pr_firstPage {
 					Body: {
 						ep_currentPage := first(i_page);
 					}
+					Comment: "Navigates directly to the first page of the paginated dataset viewer.";
 				}
 				Procedure pr_nextPage {
 					Body: {
 						if ep_currentPage = last(i_page) then
 						    !do nothing
-						else  
+						else
 						    ep_currentPage += 1;
 						endif;
 					}
+					Comment: "Navigates to the next page in the dataset viewer; has no effect if already on the last page.";
 				}
 				Procedure pr_lastPage {
 					Body: {
 						ep_currentPage := last(i_page);
 					}
+					Comment: "Navigates directly to the last page of the paginated dataset viewer.";
 				}
 				Set s_def_pages {
 					Index: i_page;
 					Definition: {
 						{1 .. p_def_numberOfPages}
 					}
+					Comment: "Set of page numbers ranging from 1 to the total number of pages, derived from dataset cardinality and page size.";
 				}
 				ElementParameter ep_currentpage {
 					Range: s_def_pages;
+					Comment: "Holds the currently selected page number in the paginated dataset viewer.";
 				}
 				Set s_def_idsPerPage {
 					SubsetOf: s_ids;
@@ -285,101 +361,122 @@ Model Main_BiasInAI {
 					Definition: {
 						{i_id | p_calc_idPerPage(ep_currentPage, i_id)}
 					}
+					Comment: "Subset of comment IDs visible on the currently selected page, derived from the page membership parameter.";
 				}
 				Parameter p_def_numberOfPages {
 					Property: NoSave;
 					Definition: ceil(p_def_cardID /$ p_quantityElementsPerPage);
+					Comment: "Computed number of pages required to display the entire dataset at the current elements-per-page setting.";
 				}
 				Parameter p_def_cardID {
 					Definition: card(s_ids);
+					Comment: "Total number of comment records currently loaded in the dataset.";
 				}
 				StringParameter sp_def_currentPage {
 					Definition: "Page " + ep_currentPage + " of " + card(s_def_pages);
+					Comment: "Formatted string displaying the current page number and total page count, shown in the UI navigation bar.";
 				}
 				Parameter p_quantityElementsPerPage {
 					Range: [0, 50000];
 					InitialData: 350;
 					webui::TooltipIdentifier: sp_def_tooltipQuantityElementsPerPage;
 					webui::UponChangeProcedure: pr_changeQuantityElementsPerPage;
+					Comment: "Number of dataset records to display per page; changing this value triggers a recalculation of page boundaries.";
 				}
 				StringParameter sp_def_tooltipQuantityElementsPerPage {
 					Definition: "By changing this value, the quantity of elements per page will change.";
+					Comment: "Tooltip text displayed when hovering over the elements-per-page input widget.";
 				}
 				Parameter p_calc_idPerPage {
 					IndexDomain: (i_page,i_id);
 					Range: binary;
+					Comment: "Binary membership parameter indicating which comment IDs belong to each page.";
 				}
 				Set s_pageIds {
 					SubsetOf: s_ids;
 					Index: i_pid;
+					Comment: "Temporary set holding the comment IDs for a single page during the pagination recalculation loop.";
 				}
 				ElementParameter ep_calc_idPerPageFirst {
 					IndexDomain: i_page;
 					Range: s_ids;
+					Comment: "Element parameter holding the first comment ID on each page, used for defining page boundaries.";
 				}
 				ElementParameter ep_calc_idPerPageLast {
 					IndexDomain: i_page;
 					Range: s_ids;
+					Comment: "Element parameter holding the last comment ID on each page, used for defining page boundaries.";
 				}
 				ElementParameter ep_lastPage {
 					Range: s_def_pages;
+					Comment: "Holds the element corresponding to the last page in the pages set, used to handle boundary conditions for the final page.";
 				}
 				StringParameter sp_def_inputPageSecondaryActions {
 					IndexDomain: (webui::indexPageExtension,webui::indexPageActionSpec);
 					Definition: {
 						{
-							( '1', 'displaytext' ) : "Import",  
-							( '1', 'icon'        ) : "aimms-upload",  
-							( '1', 'procedure'   ) : "pr_importDataset",  
+							( '1', 'displaytext' ) : "Import",
+							( '1', 'icon'        ) : "aimms-upload",
+							( '1', 'procedure'   ) : "pr_importDataset",
 							( '1', 'state'       ) : "Active"
 						}
 					}
+					Comment: "Defines the secondary action buttons on the Inputs page, including the Import button that triggers dataset loading.";
 				}
 			}
 			Section Results {
+				Comment: "Contains identifiers and procedures supporting the toxicity query and results display on the Results page.";
 				StringParameter sp_def_tooltipCommentToInvestigate {
 					Definition: {
 						"Please enter the comment you want to invesigate here!"
 					}
+					Comment: "Tooltip text displayed on the comment input field to guide the user on what to enter.";
 				}
 				StringParameter sp_queryToInvestigate {
 					webui::TooltipIdentifier: sp_def_tooltipCommentToInvestigate;
+					Comment: "The text of the comment entered by the user for toxicity investigation.";
 				}
 				StringParameter sp_def_resultPageSecondaryActions {
 					IndexDomain: (webui::indexPageExtension,webui::indexPageActionSpec);
 					Definition: {
 						{
-							( '1', 'displaytext' ) : "Check",  
-							( '1', 'icon'        ) : "aimms-theater",  
-							( '1', 'procedure'   ) : "pr_actionInvestigateWhetherEnteredCommentIsToxic",  
+							( '1', 'displaytext' ) : "Check",
+							( '1', 'icon'        ) : "aimms-theater",
+							( '1', 'procedure'   ) : "pr_actionInvestigateWhetherEnteredCommentIsToxic",
 							( '1', 'state'       ) : "Active"
 						}
 					}
+					Comment: "Defines the secondary action buttons on the Results page, including the Check button that triggers toxicity investigation.";
 				}
 				Parameter p_timeOutSeconds {
 					InitialData: 120;
+					Comment: "Maximum number of seconds to wait for a response from the bias-in-AI Python service before showing a timeout error.";
 				}
 				Set s_askedQueries {
 					Index: i_query;
 					Parameter: ep_query;
+					Comment: "Set of all queries submitted by the user during the current session, indexed by i_query.";
 				}
 				Set s_def_queryTypes {
 					Index: i_qType;
 					Definition: {
 						{'Toxic', 'Not Toxic'}
 					}
+					Comment: "Set defining the two possible toxicity classification outcomes: 'Toxic' and 'Not Toxic'.";
 				}
 				ElementParameter ep_calc_queryAnswer {
 					IndexDomain: i_query;
 					Range: s_def_queryTypes;
 					InitialData: '';
 					webui::FlagsIdentifier: sp_def_readonly;
+					Comment: "The toxicity classification result for each query, set to either 'Toxic' or 'Not Toxic' after the service responds.";
 				}
 				Parameter bp_queryAnswerEmoji {
 					IndexDomain: i_query;
 					Range: binary;
 					webui::AnnotationsIdentifier: sp_def_queryAnswerEmoji(i_query);
 					webui::FlagsIdentifier: sp_def_readonly;
+					Comment: "Binary placeholder parameter used to display the emoji annotation corresponding to the toxicity classification of each query.";
 				}
 				StringParameter sp_def_queryAnswerEmoji {
 					IndexDomain: i_query;
@@ -393,10 +490,12 @@ Model Main_BiasInAI {
 						endif;
 					}
 					webui::FlagsIdentifier: sp_def_readonly;
+					Comment: "Returns the CSS annotation class name for the emoji widget based on the toxicity classification of each query.";
 				}
 				StringParameter sp_queryAsked {
 					IndexDomain: i_query;
 					webui::FlagsIdentifier: sp_def_readonly;
+					Comment: "The original text of each query submitted by the user, stored for display in the results table.";
 				}
 				Parameter p_def_queryTypePercentage {
 					IndexDomain: i_qType;
@@ -413,34 +512,43 @@ Model Main_BiasInAI {
 						    "not-toxic"
 						endif;
 					}
+					Comment: "Returns the CSS annotation class name for the query type percentage chart bar, applying color coding based on toxicity category.";
 				}
 				Parameter bp_calc_commentInvestigatedIsToxic {
 					Range: binary;
 					Comment: "raw result from Python";
 				}
-				StringParameter sp_calc_imageQueryAnswer;
+				StringParameter sp_calc_imageQueryAnswer {
+					Comment: "File name of the image displayed on the Results page to visually represent the toxicity classification outcome.";
+				}
 				Procedure pr_pageOpenResultsPage {
 					Body: {
+						! Load the dataset if not yet initialized.
 						if not p_def_cardID then
 							pr_importDataset();
 						endif ;
-						
+
+						! Reset the query input field and answer image to their default states.
 						sp_queryToInvestigate := "<type query to check>" ;
 						sp_calc_imageQueryAnswer := "question.png";
-						
+
+						! Clear the previous toxicity result from the current inputs.
 						currentInputs -= data { bp_calc_commentInvestigatedIsToxic };
 					}
+					Comment: "Initializes the Results page by loading the dataset if needed, resetting the query input, and clearing any previous toxicity result.";
 				}
 				Procedure pr_actionInvestigateWhetherEnteredCommentIsToxic {
 					Body: {
-						
+
 						pr_determineToxic();
 					}
+					Comment: "Action procedure triggered by the Check button on the Results page; delegates to pr_determineToxic to perform the toxicity analysis.";
 				}
 			}
 		}
 	}
 	Section Leverage_biasInAI_Service {
+		Comment: "Contains procedures for uploading the Python service, launching it on AIMMS Cloud PRO, and interacting with it via the OpenAPI client.";
 		Procedure pr_uploadLaunchService {
 			Body: {
 				_sp_appStoragePath := "PublicData/ServiceApp/biasInAI.zip";
@@ -448,11 +556,11 @@ Model Main_BiasInAI {
 				if not FileExists( _sp_localApp ) then
 					webui::ShowMessage('warning', FormatString("This .aimmspack does not oontain required %s", _sp_localApp));
 				endif ;
-				
+
 				! if the app does not exist, upload it first
 				_bp_appExists := 0;
 				pro::storage::ExistsObject(_sp_appStoragePath, _bp_appExists);
-				
+
 				if _bp_appExists = 1 then
 					! Clean up previous version.
 					pro::management::LocalLogInfo("pr_uploadLaunchService(): Removing old version of: '" + _sp_appStoragePath );
@@ -468,16 +576,16 @@ Model Main_BiasInAI {
 					webui::ShowMessage('warning', _sp_warning);
 				endif ;
 				_sp_storedApp := "pro://" + _sp_appStoragePath ;
-				
+
 				_p_retCodeLaunchService := pro::service::LaunchService(
-					connectionURI      :  _sp_remoteURL, ! output, 
-					serviceId          :  "biasInAIService", 
-					imageName          :  "services/aimms-anaconda-service", 
-					imageTag           :  "2023.07-1", 
-					listenPort         :  8000, 
-					storedApp          :  _sp_storedApp, 
+					connectionURI      :  _sp_remoteURL, ! output,
+					serviceId          :  "biasInAIService",
+					imageName          :  "services/aimms-anaconda-service",
+					imageTag           :  "2023.07-1",
+					listenPort         :  8000,
+					storedApp          :  _sp_storedApp,
 					cmdLine            :  "python3 main.py"   );
-				
+
 				if not _p_retCodeLaunchService then
 					_sp_errorMessage := FormatString("pr_uploadLaunchService(): failed to launch service from %s. ", _sp_appStoragePath);
 					! Get error message in DLL
@@ -487,19 +595,20 @@ Model Main_BiasInAI {
 					else
 						_sp_errorMessage += "reason unknown";
 					endif;
-				
+
 					webui::ShowMessage('warning', _sp_errorMessage);
-					pro::management::LocalLogInfo( FormatString("pr_uploadLaunchService(): warning = \"%s\", _sp_remoteURL = \"%s\", launch service returned %i", 
+					pro::management::LocalLogInfo( FormatString("pr_uploadLaunchService(): warning = \"%s\", _sp_remoteURL = \"%s\", launch service returned %i",
 						_sp_errorMessage, _sp_remoteURL, _p_retCodeLaunchService));
-				
+
 				endif ;
-				
-				pro::management::LocalLogInfo( FormatString("pr_uploadLaunchService(): _sp_remoteURL = %s, launch service returned %i", 
+
+				pro::management::LocalLogInfo( FormatString("pr_uploadLaunchService(): _sp_remoteURL = %s, launch service returned %i",
 					_sp_remoteURL, _p_retCodeLaunchService));
-				
+
 				! Set the service.
 				biasInAITuples::api::APIServer := "http://" + _sp_remoteURL;
 			}
+			Comment: "Uploads the biasInAI Python service to AIMMS Cloud PRO central storage and launches it as a containerized service, then sets the API server URL.";
 			StringParameter _sp_appStoragePath;
 			StringParameter _sp_localApp;
 			Parameter _bp_appExists;
@@ -514,62 +623,71 @@ Model Main_BiasInAI {
 		}
 		Procedure pr_determineToxic {
 			Body: {
+				! Add the new query to the set of asked queries and store its text.
 				SetElementAdd(s_askedQueries, ep_query, card(i_query) + 1);
 				sp_queryAsked(ep_query) := sp_queryToInvestigate;
 				sp_calc_imageQueryAnswer := "question.png";
-				
+
+				! Notify the user that the investigation is in progress.
 				webui::SetProgressMessage("Investigating query...");
-				
+
+				! Make the asynchronous API call to the biasInAI service.
 				pr_callBiasInAITuples();
-				
+
+				! Wait for the asynchronous response within the configured timeout period.
 				p_loc_responseRetrieved := dex::client::WaitForResponses(timeout :  p_timeOutSeconds * 1000 /* milli seconds */);
-				
+
 				if not p_loc_responseRetrieved then
 					webui::ShowMessage('error', FormatString("No response within %i seconds.", p_timeOutSeconds));
 				endif;
 			}
+			Comment: "Registers a new user query, calls the biasInAI service asynchronously, and waits for the toxicity classification response.";
 			Parameter p_loc_responseRetrieved;
 		}
 		Procedure pr_callBiasInAITuples {
 			Body: {
 				! By not setting the RequestResponseFilePrefix, we will be using memory streams!
 				! biasInAITuples::api::RequestResponseFilePrefix:= "requestsResponses/" ;
-				
+
 				! As the OpenAPI library is Asynchronous, RestAPI calls need to be identified in the client.
 				biasInAITuples::api::NewCallInstance(ep_loc_callInstance);
-				
+
 				block ! Fill in the data for making the request.
-				
+
 					! Pass the data from the data model to the corresponding data in the biasInAI library.
 					biasInAITuples::_BiasInAIInputTuples::no_observations(ep_loc_callInstance) := p_def_cardID ;
 					biasInAITuples::_BiasInAIInputTuples::new_comment(ep_loc_callInstance) := sp_queryToInvestigate ;
 					biasInAITuples::_BiasInAIInputTuples::_observations::observations_iter := ElementRange( 1, p_def_cardID );
-				
-					ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) 
+
+					! Map each iteration index to the corresponding comment ID from s_ids.
+					ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations )
 					:=  element( s_ids, val( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) );
-				
-					biasInAITuples::_BiasInAIInputTuples::_observations::comment_( ep_loc_callInstance, biasInAITuples::_BiasInAIInputTuples::_observations::i_observations) 
+
+					! Populate the comment text for each observation in the service request.
+					biasInAITuples::_BiasInAIInputTuples::_observations::comment_( ep_loc_callInstance, biasInAITuples::_BiasInAIInputTuples::_observations::i_observations)
 					:= sp_commentText( ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) );
-				
-					biasInAITuples::_BiasInAIInputTuples::_observations::target(ep_loc_callInstance, biasInAITuples::_BiasInAIInputTuples::_observations::i_observations) 
+
+					! Populate the binary target toxicity value for each observation.
+					biasInAITuples::_BiasInAIInputTuples::_observations::target(ep_loc_callInstance, biasInAITuples::_BiasInAIInputTuples::_observations::i_observations)
 					:=  bp_target( ep_loc_iterToId( biasInAITuples::_BiasInAIInputTuples::_observations::i_observations ) ) ;
-				
+
 					block ! Check if we passed the data correctly.
 						_p_commentsCard := card( biasInAITuples::_BiasInAIInputTuples::_observations::comment_ );
 						if _p_commentsCard <> p_def_cardID then
 							webui::ShowMessage('error', "Internal error passing data \'comments\'." );
 						endif;
-				
+
 					endblock;
 				endblock;
-				
+
 				! Install hook, which will copy the data or handle the error
-				biasInAITuples::api::compute_compute_post::UserResponseHook 
+				biasInAITuples::api::compute_compute_post::UserResponseHook
 				:=  'pr_responseHookTuples' ;
-				
+
 				! Start the request.
 				biasInAITuples::api::compute_compute_post::apiCall(ep_loc_callInstance);
 			}
+			Comment: "Prepares and submits the asynchronous REST API call to the biasInAI service, passing all dataset observations and the new comment for toxicity classification.";
 			ElementParameter _ep_id {
 				Range: s_ids;
 			}
@@ -589,33 +707,33 @@ Model Main_BiasInAI {
 			Arguments: (ep_in_callInstance);
 			Body: {
 				ep_loc_status := biasInAITuples::api::CallStatusCode(ep_in_callInstance);
-				
+
 				if StringLength( sp_queryToInvestigate ) > 5 then
 					sp_log_cmtShort := substring( sp_queryToInvestigate, 1, 5 ) + "..." ;
 				else
 					sp_log_cmtShort := sp_queryToInvestigate ;
 				endif;
-				
+
 				switch (ep_loc_status) do
-					'200': ! Call went ok. 
+					'200': ! Call went ok.
 						bp_calc_commentInvestigatedIsToxic := biasInAITuples::_BiasInAIOutput::is_toxic(ep_in_callInstance) ;
 						ep_calc_queryAnswer(ep_query) := if bp_calc_commentInvestigatedIsToxic then 'Toxic' else 'Not Toxic' endif;
 						sp_calc_imageQueryAnswer := if bp_calc_commentInvestigatedIsToxic then "toxic.png" else "not_toxic.png" endif;
 						biasInAITuples::_BiasInAIInputTuples::EmptyInstance(  ep_in_callInstance );
 						biasInAITuples::_BiasInAIOutput::EmptyInstance( ep_in_callInstance );
-				
+
 					'422': ! HTTP validation error.
 					default:
-						display { biasInAITuples::_HTTPValidationError::_detail::msg, 
-							biasInAITuples::_HTTPValidationError::_detail::type_ }, 
+						display { biasInAITuples::_HTTPValidationError::_detail::msg,
+							biasInAITuples::_HTTPValidationError::_detail::type_ },
 							biasInAITuples::_HTTPValidationError::_detail::_loc::loc ;
 						webui::ShowMessage('error', FormatString("biasInAITuples::isToxic(%s)/%s failed ( status: %e, error: %e): %s.",
 							sp_log_cmtShort,  ep_in_callInstance,
-							biasInAITuples::api::CallStatusCode(ep_in_callInstance), 
+							biasInAITuples::api::CallStatusCode(ep_in_callInstance),
 							biasInAITuples::api::CallErrorCode(ep_in_callInstance),
 							"" ! Todo: work on the error elaboration!
 							));
-				
+
 				endswitch;
 			}
 			Comment: {
@@ -635,6 +753,7 @@ Model Main_BiasInAI {
 		}
 	}
 	Section Application_Initialization_and_Termination {
+		Comment: "Contains the standard AIMMS lifecycle procedures for application startup, initialization, and termination.";
 		Procedure MainInitialization {
 			Body: {
 				ProfilerStart();
@@ -644,10 +763,10 @@ Model Main_BiasInAI {
 		Procedure PostMainInitialization {
 			Body: {
 				webui::SetProgressMessage("Initializing dataset...");
-				
+
 				p_quantityElementsPerPage := 350;
 				pr_importDataset;
-				
+
 				ep_currentpage := first(i_page);
 			}
 			Comment: {
@@ -657,14 +776,16 @@ Model Main_BiasInAI {
 		}
 		Procedure pr_startup {
 			Body: {
+				! Read all DEX mapping files for data exchange.
 				dex::ReadAllMappings();
-				
+
 				! Do not launch the Python service for verify sessions and for solver sessions.
 				if (pro::proSessionType = '') ! Running in AIMMS Developer
-				    or (pro::proSessionType = 'webui') ! Running deployed on AIMMS Cloud. 
+				    or (pro::proSessionType = 'webui') ! Running deployed on AIMMS Cloud.
 				then
-				
+
 					if pro::GetPROEndPoint() then
+						! On AIMMS Cloud, upload and launch the biasInAI Python service.
 						pr_uploadLaunchService();
 					else
 						! Just use the service started by PyCharm on the biasInAI project.
@@ -672,8 +793,11 @@ Model Main_BiasInAI {
 					endif;
 				endif;
 			}
+			Comment: "Startup procedure that reads DEX mappings and launches (or connects to) the biasInAI Python service, depending on whether the app is running on AIMMS Cloud or in developer mode.";
 		}
-		Procedure MainExecution;
+		Procedure MainExecution {
+			Comment: "Main execution entry point; not used in this application as processing is event-driven through the WebUI.";
+		}
 		Procedure PreMainTermination {
 			Body: {
 				return 1 ; ! We don't work with cases.
